@@ -22,12 +22,26 @@ export const authOptions: NextAuthOptions = {
         },
         password: { label: "Password", type: "password" },
       },
+
+      // Verify user cred
+      // function will invoke when client call signin react hook
       async authorize(credentials) {
-        const { email, password } = credentials as {
-          email: string;
-          password: string;
-        };
-        return login(email, password);
+        if (!credentials?.email || !credentials.password) {
+          throw new Error("Please enter your credential.");
+        }
+
+        const loginResult = await login({
+          email: credentials.email,
+          password: credentials.password,
+        });
+
+        if (loginResult.success) {
+          return {
+            id: loginResult.data.user.id,
+            email: loginResult.data.user.email,
+          };
+        }
+        throw new Error(loginResult.message || "An error occurred.");
       },
     }),
   ],

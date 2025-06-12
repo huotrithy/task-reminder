@@ -1,15 +1,51 @@
+"use client";
+
 import { GalleryVerticalEnd } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useMutation } from "@tanstack/react-query";
+import { signIn } from "next-auth/react";
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const mutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      const email = formData.get("email");
+      const password = formData.get("password");
+      console.log(email, password);
+
+      const response = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+      console.log(response);
+
+      if (response?.error) {
+        throw new Error(response.error || "Signup failed.");
+      }
+    },
+    onSuccess: () => {
+      alert(`Login success!`);
+    },
+    onError: (error: Error) => {
+      console.log(error);
+      alert(`Signup failed: ${error.message}`);
+    },
+  });
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    mutation.mutate(formData);
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center gap-2">
             <a
@@ -35,12 +71,23 @@ export function LoginForm({
               <Input
                 id="email"
                 type="email"
+                name="email"
                 placeholder="m@example.com"
                 required
               />
             </div>
+            <div className="grid gap-3">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                name="password"
+                placeholder="***"
+                required
+              />
+            </div>
             <Button type="submit" className="w-full">
-              Login
+              {mutation.isPending ? "Login..." : "Login"}
             </Button>
           </div>
           <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">

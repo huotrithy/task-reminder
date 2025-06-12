@@ -4,14 +4,33 @@ import bcrypt from "bcryptjs";
 import { userRepository } from "../db/user-repository";
 import { SALTROUNDS } from "../constants";
 import { errorResponse, successResponse } from "../utils";
-import { signupSchema } from "../schema/auth-shemas";
+import { LoginInputs, loginSchema, signupSchema } from "../schema/auth-shemas";
 
-export async function login(email: string, password: string) {
-  const user = await userRepository.getUser(email);
-  if (user && user.password === password) {
-    return user;
+export async function login({ email, password }: LoginInputs) {
+  const validation = loginSchema.safeParse({ email, password });
+  if (!validation.success) {
+    const fieldErrors = validation.error.message;
+    return errorResponse({}, fieldErrors);
   }
-  return user;
+
+  const validatedEmail = validation.data.email;
+  const validatedPassword = validation.data.password;
+
+  const dbUser = await userRepository.getUser(validatedEmail);
+  if (!dbUser) {
+    return errorResponse({}, "This account does not exist.");
+  }
+
+  const isPasswordCorrect = await bcrypt.compare(
+    validatedPassword,
+    dbUser.password
+  );
+
+  if (isPasswordCorrect === false) {
+    return errorResponse({}, "Incorrect password.");
+  }
+
+  return successResponse({ user: dbUser });
 }
 
 export async function signup(formData: FormData) {
