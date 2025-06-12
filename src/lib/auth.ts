@@ -1,6 +1,6 @@
 import { getServerSession, NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { authService } from "@/lib/services/auth-service";
+import { login } from "@/lib/services/auth-service";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -27,7 +27,7 @@ export const authOptions: NextAuthOptions = {
           email: string;
           password: string;
         };
-        return authService.login(email, password);
+        return login(email, password);
       },
     }),
   ],

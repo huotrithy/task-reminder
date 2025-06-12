@@ -1,15 +1,44 @@
+"use client";
+
 import { GalleryVerticalEnd } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-export function SignUpForm({
+import { useMutation } from "@tanstack/react-query";
+import { signup } from "@/lib/services/auth-service";
+
+export default function SignUpForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const mutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      const response = await signup(formData);
+      if (response.success) {
+        return response.data;
+      } else {
+        throw new Error(response.message || "Signup failed.");
+      }
+    },
+    onSuccess: (data) => {
+      alert(`Account created successfully! ${data}`);
+    },
+    onError: (error: Error) => {
+      console.log(error);
+      alert(`Signup failed: ${error.message}`);
+    },
+  });
+
+  async function handleSumit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    mutation.mutate(formData);
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <form>
+      <form onSubmit={handleSumit}>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center gap-2">
             <a
@@ -61,7 +90,7 @@ export function SignUpForm({
               />
             </div>
             <Button type="submit" className="w-full">
-              Signup
+              {mutation.isPending ? "Signing up..." : "Signup"}
             </Button>
           </div>
         </div>
