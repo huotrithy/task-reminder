@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
 import { signup } from "@/lib/services/auth-service";
+import { toast } from "sonner";
 
 export default function SignUpForm({
   className,
@@ -21,12 +22,11 @@ export default function SignUpForm({
         throw new Error(response.message || "Signup failed.");
       }
     },
-    onSuccess: (data) => {
-      alert(`Account created successfully! ${data}`);
+    onSuccess: () => {
+      toast.success("Signup success");
     },
     onError: (error: Error) => {
-      console.log(error);
-      alert(`Signup failed: ${error.message}`);
+      toast.error(`Signup failed: ${error.message}`);
     },
   });
 

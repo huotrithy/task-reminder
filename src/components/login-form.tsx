@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
 import { signIn } from "next-auth/react";
+import { toast } from "sonner";
+
 export function LoginForm({
   className,
   ...props
@@ -22,18 +24,17 @@ export function LoginForm({
         email,
         password,
       });
-      console.log(response);
 
       if (response?.error) {
         throw new Error(response.error || "Signup failed.");
       }
     },
     onSuccess: () => {
-      alert(`Login success!`);
+      toast.success("Login success");
     },
     onError: (error: Error) => {
-      console.log(error);
-      alert(`Signup failed: ${error.message}`);
+      console.log("err", error);
+      toast.error(`Signup failed: ${error.message}`);
     },
   });
 
