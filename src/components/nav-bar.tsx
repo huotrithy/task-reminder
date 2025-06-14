@@ -1,11 +1,9 @@
 import Image from "next/image";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "./ui/navigation-menu";
 import { Button } from "./ui/button";
@@ -17,18 +15,12 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { MenuIcon } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "./ui/accordion";
 import Link from "next/link";
 
 export function NavBar() {
   return (
     <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f5] px-10 py-3">
-      <div className="container">
+      <div className="container max-w-7xl mx-auto">
         <nav className="flex items-center justify-between">
           <div className="flex gap-12">
             <Link href="/" className="flex items-center gap-2">
