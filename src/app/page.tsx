@@ -1,4 +1,5 @@
 "use client";
+import { NavBar } from "@/components/nav-bar";
 import { useSession } from "next-auth/react";
 
 export default function Home() {
@@ -7,50 +8,7 @@ export default function Home() {
   return (
     <div className="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden">
       <div className="layout-container flex h-full grow flex-col">
-        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f5] px-10 py-3">
-          <div className="flex items-center gap-4 text-[#111418]">
-            <div className="size-4">
-              <svg
-                viewBox="0 0 48 48"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M6 6H42L36 24L42 42H6L12 24L6 6Z"
-                  fill="currentColor"
-                ></path>
-              </svg>
-            </div>
-            <h2 className="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em]">
-              TaskMaster
-            </h2>
-          </div>
-          <div className="flex flex-1 justify-end gap-8">
-            <div className="flex items-center gap-9">
-              <a
-                className="text-[#111418] text-sm font-medium leading-normal"
-                href="#"
-              >
-                Features
-              </a>
-              <a
-                className="text-[#111418] text-sm font-medium leading-normal"
-                href="#"
-              >
-                Pricing
-              </a>
-              <a
-                className="text-[#111418] text-sm font-medium leading-normal"
-                href="#"
-              >
-                Resources
-              </a>
-            </div>
-            <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#0c7ff2] text-white text-sm font-bold leading-normal tracking-[0.015em]">
-              <span className="truncate">Get Started</span>
-            </button>
-          </div>
-        </header>
+        <NavBar />
         <div className="px-40 flex flex-1 justify-center py-5">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
             <div className="@container">
@@ -60,8 +18,6 @@ export default function Home() {
                   style={{
                     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCwLYtqqB0TNweN64BUCM_FRG9v5JgFAtHMw7uSRt3wV1R8gAtQ-Mwfv0Kxyxxgo2xDpsPAddrRdLTk1L_Y03wgV_6FLliP-BqkQ7rVURElDkRkEYI6XGuATdpwkJGwykYxx1ji3GFQsn7oe2JeiLHXemZcY_UPGY6OwC0HB1cMz1wq2yD3FwK6fUcLN1HzurE13dnvnmls19Ip9tczb5g86ofN2egg04ZhrB3_-WtQIStdrxlsufFByIeWXBgIa3Ut_iwO7cRQPaU")`,
                   }}
-                  // style={
-                  //   'background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCwLYtqqB0TNweN64BUCM_FRG9v5JgFAtHMw7uSRt3wV1R8gAtQ-Mwfv0Kxyxxgo2xDpsPAddrRdLTk1L_Y03wgV_6FLliP-BqkQ7rVURElDkRkEYI6XGuATdpwkJGwykYxx1ji3GFQsn7oe2JeiLHXemZcY_UPGY6OwC0HB1cMz1wq2yD3FwK6fUcLN1HzurE13dnvnmls19Ip9tczb5g86ofN2egg04ZhrB3_-WtQIStdrxlsufFByIeWXBgIa3Ut_iwO7cRQPaU");'
                 >
                   <div className="flex flex-col gap-2 text-left">
                     <h1 className="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">
