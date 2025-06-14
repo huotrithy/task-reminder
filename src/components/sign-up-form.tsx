@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
 import { signup } from "@/lib/services/auth-service";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function SignUpForm({
   className,
@@ -41,21 +42,23 @@ export default function SignUpForm({
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center gap-2">
-            <a
-              href="#"
+            <Link
+              href="/"
               className="flex flex-col items-center gap-2 font-medium"
             >
               <div className="flex size-8 items-center justify-center rounded-md">
                 <GalleryVerticalEnd className="size-6" />
               </div>
-              <span className="sr-only">Acme Inc.</span>
-            </a>
-            <h1 className="text-xl font-bold">Welcome to Acme Inc.</h1>
+              <span className="sr-only">Task Reminder.</span>
+            </Link>
+            <h1 className="text-xl font-bold">Welcome to Task Reminder.</h1>
             <div className="text-center text-sm">
               Don&apos;t have an account?{" "}
-              <a href="#" className="underline underline-offset-4">
-                Sign up
-              </a>
+              <Button variant="link" className="p-1">
+                <Link href="/login" className="underline underline-offset-4">
+                  Login
+                </Link>
+              </Button>
             </div>
           </div>
           <div className="flex flex-col gap-6">
