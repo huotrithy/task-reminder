@@ -84,9 +84,12 @@ export function NavBar() {
         title: "App",
         body: (
           <NavigationMenuItem>
-            <Link href="/app" className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink
+              href="/app"
+              className={navigationMenuTriggerStyle()}
+            >
               App
-            </Link>
+            </NavigationMenuLink>
           </NavigationMenuItem>
         ),
         collapsedBody: (

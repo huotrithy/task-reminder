@@ -15,22 +15,33 @@ model User {
     createdAt DateTime @default(now()) @map(name: "created_at")
     updatedAt DateTime @updatedAt @map(name: "updated_at")
 
-    task Task[]
+    category Category[]
 
     @@map(name: "user")
 }
 
+model Category {
+    id           String  @id @default(cuid())
+    categoryName String  @map(name: "category_name")
+    User         User?   @relation(fields: [userId], references: [id])
+    userId       String?
+
+    task Task[]
+
+    @@map(name: "category")
+}
+
 model Task {
-    id        String   @id @default(cuid())
-    taskName  String   @map(name: "task_name")
-    desc      String?
-    deadline  DateTime
-    isDelete  Boolean  @map(name: "is_delete")
-    isToSend  Boolean  @map(name: "is_to_send")
-    createdAt DateTime @default(now()) @map(name: "created_at")
-    updatedAt DateTime @updatedAt @map(name: "updated_at")
-    User      User?    @relation(fields: [userId], references: [id])
-    userId    String?
+    id         String    @id @default(cuid())
+    taskName   String    @map(name: "task_name")
+    desc       String?
+    deadline   DateTime
+    isDelete   Boolean   @map(name: "is_delete")
+    isToSend   Boolean   @map(name: "is_to_send")
+    createdAt  DateTime  @default(now()) @map(name: "created_at")
+    updatedAt  DateTime  @updatedAt @map(name: "updated_at")
+    Category   Category? @relation(fields: [categoryId], references: [id])
+    categoryId String?
 
     @@map(name: "task")
 }
