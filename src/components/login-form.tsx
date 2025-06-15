@@ -21,9 +21,10 @@ export function LoginForm({
       console.log(email, password);
 
       const response = await signIn("credentials", {
-        redirect: false,
+        redirect: true,
         email,
         password,
+        callbackUrl: "/app",
       });
 
       if (response?.error) {

@@ -9,11 +9,14 @@ import { useMutation } from "@tanstack/react-query";
 import { signup } from "@/lib/services/auth-service";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function SignUpForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter();
+
   const mutation = useMutation({
     mutationFn: async (formData: FormData) => {
       const response = await signup(formData);
@@ -25,6 +28,7 @@ export default function SignUpForm({
     },
     onSuccess: () => {
       toast.success("Signup success");
+      router.push("/login");
     },
     onError: (error: Error) => {
       toast.error(`Signup failed: ${error.message}`);

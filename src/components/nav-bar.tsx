@@ -18,7 +18,7 @@ import {
 } from "./ui/sheet";
 import { MenuIcon } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import React, { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 
 export function NavBar() {
@@ -40,6 +40,66 @@ export function NavBar() {
     signOut();
   }
 
+  const menu = {
+    unauthenticate: [
+      {
+        title: "Features",
+        body: (
+          <NavigationMenuItem>
+            <Link
+              href="#feature"
+              onClick={(e) => handleScroll(e, "feature")}
+              className={navigationMenuTriggerStyle()}
+            >
+              Features
+            </Link>
+          </NavigationMenuItem>
+        ),
+        collapsedBody: null,
+      },
+      {
+        title: "About",
+        body: (
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              href="/"
+              className={navigationMenuTriggerStyle()}
+            >
+              About
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+        ),
+        collapsedBody: (
+          <div className="flex flex-col gap-6">
+            <Link href="#" className="font-medium">
+              About
+            </Link>
+          </div>
+        ),
+      },
+    ],
+
+    authenticate: [
+      {
+        title: "App",
+        body: (
+          <NavigationMenuItem>
+            <Link href="/app" className={navigationMenuTriggerStyle()}>
+              App
+            </Link>
+          </NavigationMenuItem>
+        ),
+        collapsedBody: (
+          <div className="flex flex-col gap-6">
+            <Link href="/app" className="font-medium">
+              App
+            </Link>
+          </div>
+        ),
+      },
+    ],
+  };
+
   return (
     <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f5] px-10 py-3">
       <div className="container max-w-7xl mx-auto">
@@ -59,23 +119,17 @@ export function NavBar() {
             </Link>
             <NavigationMenu className="hidden lg:block">
               <NavigationMenuList>
-                <NavigationMenuItem>
-                  <Link
-                    href="#feature"
-                    onClick={(e) => handleScroll(e, "feature")}
-                    className={navigationMenuTriggerStyle()}
-                  >
-                    Features
-                  </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuLink
-                    href="/"
-                    className={navigationMenuTriggerStyle()}
-                  >
-                    About
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
+                {session.status === "authenticated"
+                  ? menu.authenticate.map((item, index) => (
+                      <React.Fragment key={index}>
+                        {item.collapsedBody}
+                      </React.Fragment>
+                    ))
+                  : menu.unauthenticate.map((item, index) => (
+                      <React.Fragment key={index}>
+                        {item.collapsedBody}
+                      </React.Fragment>
+                    ))}
               </NavigationMenuList>
             </NavigationMenu>
           </div>
@@ -121,16 +175,32 @@ export function NavBar() {
                   </Link>
                 </SheetTitle>
               </SheetHeader>
-              <div className="flex flex-col px-4 py-0">
+              <div className="flex flex-col px-4 py-0 pb-3">
                 <div className="flex flex-col gap-6">
-                  <Link href="#" className="font-medium">
-                    About
-                  </Link>
+                  {session.status === "authenticated"
+                    ? menu.authenticate.map((item, index) => (
+                        <React.Fragment key={index}>
+                          {item.collapsedBody}
+                        </React.Fragment>
+                      ))
+                    : menu.unauthenticate.map((item, index) => (
+                        <React.Fragment key={index}>
+                          {item.collapsedBody}
+                        </React.Fragment>
+                      ))}
                 </div>
-                <div className="mt-6 flex flex-col gap-4">
-                  <Button variant="outline">Sign in</Button>
-                  <Button>Start for free</Button>
-                </div>
+                {session.status === "authenticated" ? (
+                  <div className="mt-6 flex flex-col gap-6">
+                    <Button variant="outline" onClick={handleLogout}>
+                      Logout
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="mt-6 flex flex-col gap-4">
+                    <Button variant="outline">Sign in</Button>
+                    <Button>Start for free</Button>
+                  </div>
+                )}
               </div>
             </SheetContent>
           </Sheet>
