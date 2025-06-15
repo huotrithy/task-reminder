@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import {
   NavigationMenu,
@@ -17,8 +19,10 @@ import {
 import { MenuIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { signOut, useSession } from "next-auth/react";
 
 export function NavBar() {
+  const session = useSession();
   const [isOpenMenu, setOpenMenu] = useState(false);
 
   function handleScroll(e: React.MouseEvent, id: string) {
@@ -30,6 +34,10 @@ export function NavBar() {
         element.scrollIntoView({ behavior: "smooth" });
       }
     }, 100);
+  }
+
+  function handleLogout() {
+    signOut();
   }
 
   return (
@@ -73,12 +81,20 @@ export function NavBar() {
           </div>
 
           <div className="hidden items-center gap-4 lg:flex">
-            <Button variant="outline">
-              <Link href="/login">Sign in</Link>
-            </Button>
-            <Button>
-              <Link href="/sign-up">Start for free</Link>
-            </Button>
+            {session.status === "authenticated" ? (
+              <Button variant="outline" onClick={handleLogout}>
+                Logout
+              </Button>
+            ) : (
+              <>
+                <Button variant="outline">
+                  <Link href="/login">Sign in</Link>
+                </Button>
+                <Button>
+                  <Link href="/sign-up">Start for free</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           <Sheet open={isOpenMenu} onOpenChange={setOpenMenu}>

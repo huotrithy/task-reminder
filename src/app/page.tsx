@@ -1,12 +1,8 @@
-"use client";
 import { FeatureCard } from "@/components/home/feature-card";
 import { NavBar } from "@/components/nav-bar";
 import { Bell, BookCheck, CalendarCheck } from "lucide-react";
-import { useSession } from "next-auth/react";
 
 export default function Home() {
-  const session = useSession();
-  console.log(session);
   return (
     <div className="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden">
       <div className="layout-container flex h-full grow flex-col">

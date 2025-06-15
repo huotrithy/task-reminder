@@ -34,7 +34,6 @@ export function LoginForm({
       toast.success("Login success");
     },
     onError: (error: Error) => {
-      console.log("err", error);
       toast.error(`Signup failed: ${error.message}`);
     },
   });
