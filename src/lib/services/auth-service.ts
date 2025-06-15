@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { userRepository } from "../db/user-repository";
 import { SALTROUNDS } from "../constants";
 import { errorResponse, successResponse } from "../utils";
-import { LoginInputs, loginSchema, signupSchema } from "../schema/auth-shemas";
+import { LoginInputs, loginSchema, signupSchema } from "../schemas/auth-schemas";
 
 export async function login({ email, password }: LoginInputs) {
   try {

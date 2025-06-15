@@ -9,22 +9,23 @@ import { useMutation } from "@tanstack/react-query";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter();
+
   const mutation = useMutation({
     mutationFn: async (formData: FormData) => {
       const email = formData.get("email");
       const password = formData.get("password");
-      console.log(email, password);
 
       const response = await signIn("credentials", {
-        redirect: true,
+        redirect: false,
         email,
         password,
-        callbackUrl: "/app",
       });
 
       if (response?.error) {
@@ -33,9 +34,10 @@ export function LoginForm({
     },
     onSuccess: () => {
       toast.success("Login success");
+      router.push("/app");
     },
     onError: (error: Error) => {
-      toast.error(`Signup failed: ${error.message}`);
+      toast.error(error.message);
     },
   });
 

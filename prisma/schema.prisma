@@ -23,7 +23,7 @@ model User {
 model Task {
     id        String   @id @default(cuid())
     taskName  String   @map(name: "task_name")
-    desc      String
+    desc      String?
     deadline  DateTime
     isDelete  Boolean  @map(name: "is_delete")
     isToSend  Boolean  @map(name: "is_to_send")
