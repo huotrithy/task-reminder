@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import NextAuthSessionProvider from "./providers";
+import AppProvider from "./providers";
 import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
@@ -29,7 +29,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased scroll-smooth`}
       >
-        <NextAuthSessionProvider>{children}</NextAuthSessionProvider>
+        <AppProvider>{children}</AppProvider>
         <Toaster />
       </body>
     </html>

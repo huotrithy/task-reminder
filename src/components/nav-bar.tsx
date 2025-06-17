@@ -108,7 +108,10 @@ export function NavBar() {
       <div className="container max-w-7xl mx-auto">
         <nav className="flex items-center justify-between">
           <div className="flex gap-12">
-            <Link href="/" className="flex items-center gap-2">
+            <Link
+              href={session.status === "authenticated" ? "/app" : "/"}
+              className="flex items-center gap-2"
+            >
               <Image
                 src="task.svg"
                 width={30}
@@ -164,7 +167,10 @@ export function NavBar() {
             <SheetContent side="top" className="max-h-screen overflow-auto">
               <SheetHeader>
                 <SheetTitle>
-                  <Link href="/" className="flex items-center gap-2">
+                  <Link
+                    href={session.status === "authenticated" ? "/app" : "/"}
+                    className="flex items-center gap-2"
+                  >
                     <Image
                       src="task.svg"
                       width={30}

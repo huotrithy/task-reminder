@@ -1,16 +1,16 @@
 import { prisma } from "../prisma";
 import { CreateTaskInputs } from "../schemas/task-schemas";
 
-async function getTasks(userId: string) {
+async function getTasks(categoryId: string) {
   const tasks = await prisma.task.findMany({
     where: {
-      userId: userId,
+      categoryId: categoryId,
     },
   });
   return tasks;
 }
 
-async function createTask(taskData: CreateTaskInputs, userId: string) {
+async function createTask(taskData: CreateTaskInputs, categoryId: string) {
   const createdTask = await prisma.task.create({
     data: {
       taskName: taskData.taskName,
@@ -18,7 +18,7 @@ async function createTask(taskData: CreateTaskInputs, userId: string) {
       deadline: taskData.deadline,
       isToSend: taskData.isToSend,
       isDelete: false,
-      userId: userId,
+      categoryId: categoryId,
     },
   });
   return createdTask;

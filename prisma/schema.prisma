@@ -23,6 +23,7 @@ model User {
 model Category {
     id           String  @id @default(cuid())
     categoryName String  @map(name: "category_name")
+    isDelete     Boolean @map(name: "is_delete")
     User         User?   @relation(fields: [userId], references: [id])
     userId       String?
 
