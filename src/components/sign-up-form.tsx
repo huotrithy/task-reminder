@@ -20,6 +20,7 @@ export default function SignUpForm({
   const mutation = useMutation({
     mutationFn: async (formData: FormData) => {
       const response = await signup(formData);
+      console.log(response.success);
       if (response.success) {
         return response.data;
       } else {

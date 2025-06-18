@@ -2,10 +2,13 @@
 
 import { getServerAuthSession } from "../auth";
 import { categoryRepository } from "../db/category-repository";
-import { createCategorySchema } from "../schemas/category-schema";
+import {
+  CreateCategoryInputs,
+  createCategorySchema,
+} from "../schemas/category-schema";
 import { errorResponse, successResponse } from "../utils";
 
-export async function createCategory(formData: FormData) {
+export async function createCategory(formInput: CreateCategoryInputs) {
   try {
     const session = await getServerAuthSession();
     if (!session) {
@@ -13,24 +16,21 @@ export async function createCategory(formData: FormData) {
     }
     const userId = session.user.id;
 
-    const formInput = {
-      categoryName: formData.get("category-name"),
-    };
-
     const validation = createCategorySchema.safeParse(formInput);
     if (!validation.success) {
       const fieldErrors = validation.error.message;
       return errorResponse({}, fieldErrors);
     }
 
-    const createdTask = categoryRepository.createCategory(
+    const createdCategory = await categoryRepository.createCategory(
       validation.data,
       userId
     );
-    return successResponse({ task: createdTask });
+
+    return successResponse({ category: createdCategory });
   } catch (error: unknown) {
     console.log(error);
-    return errorResponse({}, "Could not retrieve tasks.");
+    return errorResponse({}, "Something went wrong.");
   }
 }
 
@@ -45,6 +45,6 @@ export async function getCategories() {
     const categories = await categoryRepository.getCategories(userId);
     return successResponse({ categories: categories });
   } catch {
-    return errorResponse({}, "Could not retrieve tasks.");
+    return errorResponse({}, "Something went wrong.");
   }
 }

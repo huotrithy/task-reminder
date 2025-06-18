@@ -104,7 +104,7 @@ export function NavBar() {
   };
 
   return (
-    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f5] px-10 py-3">
+    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f5] px-5 py-3">
       <div className="container max-w-7xl mx-auto">
         <nav className="flex items-center justify-between">
           <div className="flex gap-12">
@@ -113,7 +113,7 @@ export function NavBar() {
               className="flex items-center gap-2"
             >
               <Image
-                src="task.svg"
+                src="/task.svg"
                 width={30}
                 height={30}
                 className="max-h-8"
@@ -172,7 +172,7 @@ export function NavBar() {
                     className="flex items-center gap-2"
                   >
                     <Image
-                      src="task.svg"
+                      src="/task.svg"
                       width={30}
                       height={10}
                       className="max-h-8"
