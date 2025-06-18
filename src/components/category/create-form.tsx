@@ -57,7 +57,7 @@ export function CreateCategoryForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-8 mt-4 flex flex-col"
+        className="space-y-8 mt-6 flex flex-col"
       >
         <FormField
           control={form.control}

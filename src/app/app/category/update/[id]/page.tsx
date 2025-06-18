@@ -1,4 +1,5 @@
-import { CreateCategoryForm } from "@/components/category/create-form";
+import { UpdateCategoryForm } from "@/components/category/update-form";
+import { TitleHeader } from "@/components/title-header";
 import { getCategory } from "@/lib/services/category-service";
 
 interface Props {
@@ -11,10 +12,8 @@ export default async function Page({ params }: Props) {
   console.log("category: ", category);
   return (
     <div>
-      <h2 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0">
-        Update Category
-      </h2>
-      <CreateCategoryForm />
+      <TitleHeader title="Update Category" backLink={`/app/category/${id}`} />
+      <UpdateCategoryForm />
     </div>
   );
 }

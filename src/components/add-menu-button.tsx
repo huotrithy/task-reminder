@@ -6,7 +6,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-export default function FloatButton() {
+export default function AddButtonMenu() {
   const [open, setOpen] = useState(false);
   return (
     <div className="absolute bottom-4 right-4 z-50">

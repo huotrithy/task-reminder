@@ -5,7 +5,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import AppClient from "./page-client";
-import FloatButton from "@/components/flot-button";
+import AddButtonMenu from "@/components/add-menu-button";
 
 export async function fetchCategory() {
   const response = await getCategories();
@@ -28,7 +28,7 @@ export default async function Page() {
   return (
     <HydrationBoundary state={dehydratedState}>
       <AppClient />
-      <FloatButton />
+      <AddButtonMenu />
     </HydrationBoundary>
   );
 }
