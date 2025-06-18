@@ -7,12 +7,21 @@ import {
 import AppClient from "./page-client";
 import FloatButton from "@/components/flot-button";
 
+export async function fetchCategory() {
+  const response = await getCategories();
+  if (response.success) {
+    return response.data;
+  }
+
+  throw new Error(response.message || "An error has occured.");
+}
+
 export default async function Page() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
     queryKey: ["category"],
-    queryFn: getCategories,
+    queryFn: fetchCategory,
   });
 
   const dehydratedState = dehydrate(queryClient);

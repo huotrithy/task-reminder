@@ -19,8 +19,11 @@ import { Button } from "../ui/button";
 import { createCategory } from "@/lib/services/category-service";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export function CreateCategoryForm() {
+  const router = useRouter();
+
   const form = useForm<CreateCategoryInputs>({
     resolver: zodResolver(createCategorySchema),
     defaultValues: {
@@ -39,6 +42,7 @@ export function CreateCategoryForm() {
     onSuccess: () => {
       toast.success("Category created successfully!");
       form.reset();
+      router.push("/app");
     },
     onError: (error) => {
       toast.error(`${error.message}`);
@@ -61,7 +65,7 @@ export function CreateCategoryForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Category Name</FormLabel>
-              <FormControl>
+              <FormControl className="mt-0.5">
                 <Input placeholder="Enter category name" {...field} />
               </FormControl>
               <FormMessage />
