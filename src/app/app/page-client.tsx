@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { fetchCategory } from "./page";
+import Link from "next/link";
 
 export default function AppClient() {
   const { data, isLoading, isError, error } = useQuery({
@@ -9,7 +10,7 @@ export default function AppClient() {
     queryFn: fetchCategory,
   });
 
-  if (isLoading) return <div>Loading posts...</div>;
+  if (isLoading) return <div>Loading tasks...</div>;
   if (isError) return <div>Error: {error?.message}</div>;
 
   return (
@@ -21,12 +22,7 @@ export default function AppClient() {
         {data?.categories &&
           data.categories.map((category, index) => (
             <div className="flex items-center gap-4" key={index}>
-              <div
-                className="text-[#111418] flex items-center justify-center rounded-lg bg-[#f0f2f5] shrink-0 size-12"
-                // dataIcon="List"
-                // dataSize="24px"
-                // dataWeight="regular"
-              >
+              <div className="text-[#111418] flex items-center justify-center rounded-lg bg-[#f0f2f5] shrink-0 size-12">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24px"
@@ -38,9 +34,12 @@ export default function AppClient() {
                 </svg>
               </div>
               <div className="flex flex-col justify-center">
-                <p className="text-[#111418] text-base font-medium leading-normal line-clamp-1">
-                  {category.categoryName}
-                </p>
+                <Link href={`/app/category/${category.id}`}>
+                  <p className="text-[#111418] text-base font-medium leading-normal line-clamp-1">
+                    {category.categoryName}
+                  </p>
+                </Link>
+
                 <p className="text-[#60758a] text-sm font-normal leading-normal line-clamp-2">
                   Due Today
                 </p>

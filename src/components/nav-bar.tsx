@@ -86,16 +86,16 @@ export function NavBar() {
           <NavigationMenuItem>
             <NavigationMenuLink
               href="/app"
-              className={navigationMenuTriggerStyle()}
+              // className={navigationMenuTriggerStyle()}
             >
-              App
+              Setting
             </NavigationMenuLink>
           </NavigationMenuItem>
         ),
         collapsedBody: (
           <div className="flex flex-col gap-6">
             <Link href="/app" className="font-medium">
-              App
+              Setting
             </Link>
           </div>
         ),
@@ -107,7 +107,7 @@ export function NavBar() {
     <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f5] px-5 py-3">
       <div className="container max-w-7xl mx-auto">
         <nav className="flex items-center justify-between">
-          <div className="flex gap-12">
+          <div className="flex gap-12 items-center">
             <Link
               href={session.status === "authenticated" ? "/app" : "/"}
               className="flex items-center gap-2"
