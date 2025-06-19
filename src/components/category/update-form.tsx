@@ -20,15 +20,16 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { Category } from "@prisma/client";
 
-export function UpdateCategoryForm() {
+export function UpdateCategoryForm(initialData: Category) {
   const router = useRouter();
 
   const form = useForm<UpdateCategoryInputs>({
     resolver: zodResolver(updateCategorySchema),
     defaultValues: {
-      categoryName: "",
-      categoryId: "",
+      categoryName: initialData.categoryName,
+      categoryId: initialData.id,
     },
   });
 
@@ -50,6 +51,8 @@ export function UpdateCategoryForm() {
     },
   });
 
+  const onInvalid = (errors: unknown) => console.error(errors);
+
   const handleSubmit = (data: UpdateCategoryInputs) => {
     mutation.mutate(data);
   };
@@ -57,7 +60,7 @@ export function UpdateCategoryForm() {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(handleSubmit)}
+        onSubmit={form.handleSubmit(handleSubmit, onInvalid)}
         className="space-y-8 mt-6 flex flex-col"
       >
         <FormField
@@ -74,12 +77,26 @@ export function UpdateCategoryForm() {
           )}
         />
 
+        <FormField
+          control={form.control}
+          name="categoryId"
+          render={({ field }) => (
+            <FormItem hidden>
+              <FormLabel>Category Id</FormLabel>
+              <FormControl className="mt-0.5">
+                <Input placeholder="Category ID" disabled {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <Button
           type="submit"
           disabled={mutation.isPending}
           className="self-end"
         >
-          {mutation.isPending ? "Submitting..." : "Create Category"}
+          {mutation.isPending ? "Submitting..." : "Update Category"}
         </Button>
       </form>
     </Form>
