@@ -1,6 +1,7 @@
 import { prisma } from "../prisma";
 import {
   CreateCategoryInputs,
+  DeleteCategoryInputs,
   UpdateCategoryInputs,
 } from "../schemas/category-schema";
 
@@ -8,6 +9,7 @@ async function getCategories(userId: string) {
   const categories = await prisma.category.findMany({
     where: {
       userId: userId,
+      isDelete: false,
     },
   });
   return categories;
@@ -18,6 +20,7 @@ async function getCategory(categoryId: string, userId: string) {
     where: {
       id: categoryId,
       userId: userId,
+      isDelete: false,
     },
   });
   return category;
@@ -49,9 +52,27 @@ async function updateCategory(categoryData: UpdateCategoryInputs) {
   return updatedCategory;
 }
 
+async function deleteCategory(
+  categoryData: DeleteCategoryInputs,
+  userId: string
+) {
+  const deletedCategory = await prisma.category.update({
+    where: {
+      id: categoryData.categoryId,
+      userId: userId,
+    },
+    data: {
+      isDelete: true,
+    },
+  });
+
+  return deletedCategory;
+}
+
 export const categoryRepository = {
   createCategory,
   getCategory,
   getCategories,
   updateCategory,
+  deleteCategory,
 };

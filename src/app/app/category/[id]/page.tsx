@@ -1,29 +1,38 @@
-import { TitleHeader } from "@/components/title-header";
-import DetailButtonMenu from "@/components/detail-menu-button";
 import { getCategory } from "@/lib/services/category-service";
-import { toast } from "sonner";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+import PageClient from "./page-client";
 
 interface Props {
   params: { id: string };
 }
 
-export default async function Page({ params }: Props) {
-  const { id } = await params;
-  const response = await getCategory(id);
-
-  if (!response.success) {
-    toast.error(response.message);
-    throw new Error(response.message);
+export async function fetchCategory(categoryId: string) {
+  const response = await getCategory(categoryId);
+  if (response.success) {
+    return response.data;
   }
 
-  return (
-    <div>
-      <TitleHeader title="Category Detail" backLink="/app" />
+  throw new Error(response.message || "An error has occured.");
+}
 
-      <h2 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0">
-        {response.data.category.categoryName}
-      </h2>
-      <DetailButtonMenu categoryId={response.data.category.id} />
-    </div>
+export default async function Page({ params }: Props) {
+  const { id } = await params;
+  const categoryId = id;
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["category", categoryId],
+    queryFn: () => fetchCategory(categoryId),
+  });
+
+  const dehydratedState = dehydrate(queryClient);
+  return (
+    <HydrationBoundary state={dehydratedState}>
+      <PageClient categoryId={categoryId} />
+    </HydrationBoundary>
   );
 }

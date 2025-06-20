@@ -14,3 +14,8 @@ export const updateCategorySchema = z.object({
   categoryId: z.cuid(),
 });
 export type UpdateCategoryInputs = z.infer<typeof updateCategorySchema>;
+
+export const deleteCategorySchema = z.object({
+  categoryId: z.cuid(),
+});
+export type DeleteCategoryInputs = z.infer<typeof deleteCategorySchema>;

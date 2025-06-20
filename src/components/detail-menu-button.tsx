@@ -1,15 +1,25 @@
 "use client";
 
-import { EllipsisVertical, Pencil, Trash2, X } from "lucide-react";
+import { EllipsisVertical, Pencil, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import Link from "next/link";
+import { DeleteModal } from "./delete-modal";
+import { ErrorResponse, SuccessResponse } from "@/lib/types/type";
 
 interface Props {
-  categoryId: string;
+  deleteTitle: string;
+  onDelete: () => Promise<SuccessResponse<unknown> | ErrorResponse<unknown>>;
+  deleteSuccessRedirectUrl: string;
+  updateUrl: string;
 }
 
-export default function DetailButtonMenu({ categoryId }: Props) {
+export default function DetailButtonMenu({
+  updateUrl,
+  deleteTitle,
+  deleteSuccessRedirectUrl,
+  onDelete,
+}: Props) {
   const [open, setOpen] = useState(false);
   return (
     <div className="absolute bottom-4 right-4 z-50">
@@ -17,18 +27,16 @@ export default function DetailButtonMenu({ categoryId }: Props) {
         {open && (
           <>
             <Button variant="outline" size="lg">
-              <Link
-                href={`/app/category/update/${categoryId}`}
-                className="flex items-center gap-2"
-              >
+              <Link href={updateUrl} className="flex items-center gap-2">
                 <Pencil /> Update
               </Link>
             </Button>
 
-            <Button variant="outline" size="lg">
-              <Trash2 />
-              Delete
-            </Button>
+            <DeleteModal
+              title={deleteTitle}
+              onDelete={onDelete}
+              successRedirectUrl={deleteSuccessRedirectUrl}
+            />
           </>
         )}
 

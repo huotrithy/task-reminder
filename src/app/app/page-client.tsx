@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function AppClient() {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["category"],
+    queryKey: ["categories"],
     queryFn: fetchCategory,
   });
 

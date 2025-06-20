@@ -5,6 +5,8 @@ import { categoryRepository } from "../db/category-repository";
 import {
   CreateCategoryInputs,
   createCategorySchema,
+  DeleteCategoryInputs,
+  deleteCategorySchema,
   UpdateCategoryInputs,
   updateCategorySchema,
 } from "../schemas/category-schema";
@@ -86,8 +88,34 @@ export async function getCategory(id: string) {
     if (!category) {
       return errorResponse({}, "Category not found.");
     }
+    console.log(category);
 
     return successResponse({ category: category });
+  } catch {
+    return errorResponse({}, "Something went wrong.");
+  }
+}
+
+export async function deleteCategory(formInput: DeleteCategoryInputs) {
+  try {
+    const session = await getServerAuthSession();
+    if (!session) {
+      return errorResponse({}, "Unauthorize operation.");
+    }
+    const userId = session.user.id;
+
+    const validation = deleteCategorySchema.safeParse(formInput);
+    if (!validation.success) {
+      const fieldErrors = validation.error.message;
+      return errorResponse({}, fieldErrors);
+    }
+
+    const deletedCategory = await categoryRepository.deleteCategory(
+      validation.data,
+      userId
+    );
+
+    return successResponse({ category: deletedCategory });
   } catch {
     return errorResponse({}, "Something went wrong.");
   }
