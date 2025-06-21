@@ -82,7 +82,10 @@ export async function getCategories(
   }
 }
 
-export async function getCategory(id: string) {
+export async function getCategory(
+  id: string,
+  categoryIncludeOptions?: CategoryIncludeOptions
+) {
   try {
     const session = await getServerAuthSession();
     if (!session) {
@@ -90,7 +93,11 @@ export async function getCategory(id: string) {
     }
     const userId = session.user.id;
 
-    const category = await categoryRepository.getCategory(id, userId);
+    const category = await categoryRepository.getCategory(
+      id,
+      userId,
+      categoryIncludeOptions
+    );
     if (!category) {
       return errorResponse({}, "Category not found.");
     }

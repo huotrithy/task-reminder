@@ -35,16 +35,30 @@ async function getCategories(
   return categories;
 }
 
-async function getCategory(categoryId: string, userId: string) {
+async function getCategory(
+  categoryId: string,
+  userId: string,
+  includeOptions?: CategoryIncludeOptions
+) {
+  const include: Prisma.CategoryInclude = {};
+  if (includeOptions?.includeTask) {
+    include.task = true;
+  }
+  if (includeOptions?.includeUser) {
+    include.User = true;
+  }
+
+  const query = Prisma.validator<Prisma.CategoryDefaultArgs>()({
+    include: include,
+  });
+
   const category = await prisma.category.findFirst({
     where: {
       id: categoryId,
       userId: userId,
       isDelete: false,
     },
-    include: {
-      task: true,
-    },
+    ...query,
   });
   return category;
 }

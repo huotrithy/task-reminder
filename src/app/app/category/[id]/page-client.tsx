@@ -5,6 +5,7 @@ import DetailButtonMenu from "@/components/detail-menu-button";
 import { deleteCategory } from "@/lib/services/category-service";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCategory } from "./page";
+import { TaskList } from "@/components/category/task-list";
 
 export default function PageClient({ categoryId }: { categoryId: string }) {
   const { data, isLoading, isError, error } = useQuery({
@@ -17,12 +18,12 @@ export default function PageClient({ categoryId }: { categoryId: string }) {
 
   return (
     <div>
-      <TitleHeader title="Category Detail" backLink="/app" />
-
-      <h2 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0">
-        {data?.category.categoryName}
-      </h2>
-
+      <TitleHeader
+        title={data?.category.categoryName}
+        subTitle={`${data?.category.task.length} Tasks`}
+        backLink="/app"
+      />
+      <TaskList tasks={data?.category.task} />
       {data?.category && (
         <DetailButtonMenu
           updateUrl={`/app/category/update/${data.category.id}`}
