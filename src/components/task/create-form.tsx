@@ -31,12 +31,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useRouter } from "next/navigation";
 
 interface Props {
   categories: Category[];
 }
 
 export function CreateTaskForm({ categories }: Props) {
+  const router = useRouter();
   const form = useForm<CreateTaskInputs>({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
@@ -50,6 +52,7 @@ export function CreateTaskForm({ categories }: Props) {
 
   const mutation = useMutation({
     mutationFn: async (formInput: CreateTaskInputs) => {
+      console.log(formInput);
       const response = await createTask(formInput);
       if (response.success) {
         return response.data;
@@ -57,9 +60,9 @@ export function CreateTaskForm({ categories }: Props) {
       throw new Error(response.message);
     },
     onSuccess: () => {
-      toast.success("Category created successfully!");
+      toast.success("Task created successfully!");
+      router.push("/app");
       form.reset();
-      //   router.push("/app");
     },
     onError: (error) => {
       toast.error(`${error.message}`);
@@ -69,6 +72,7 @@ export function CreateTaskForm({ categories }: Props) {
   const handleSubmit = (data: CreateTaskInputs) => {
     mutation.mutate(data);
   };
+
   return (
     <Form {...form}>
       <form
