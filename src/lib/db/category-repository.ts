@@ -1,17 +1,37 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "../prisma";
 import {
+  CategoryIncludeOptions,
   CreateCategoryInputs,
   DeleteCategoryInputs,
   UpdateCategoryInputs,
 } from "../schemas/category-schema";
 
-async function getCategories(userId: string) {
+async function getCategories(
+  userId: string,
+  includeOptions?: CategoryIncludeOptions
+) {
+  // Dynamically include object
+  const include: Prisma.CategoryInclude = {};
+  if (includeOptions?.includeTask) {
+    include.task = true;
+  }
+  if (includeOptions?.includeUser) {
+    include.User = true;
+  }
+
+  const query = Prisma.validator<Prisma.CategoryDefaultArgs>()({
+    include: include,
+  });
+
   const categories = await prisma.category.findMany({
     where: {
       userId: userId,
       isDelete: false,
     },
+    ...query,
   });
+
   return categories;
 }
 
@@ -21,6 +41,9 @@ async function getCategory(categoryId: string, userId: string) {
       id: categoryId,
       userId: userId,
       isDelete: false,
+    },
+    include: {
+      task: true,
     },
   });
   return category;

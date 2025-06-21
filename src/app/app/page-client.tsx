@@ -41,7 +41,7 @@ export default function AppClient() {
                 </Link>
 
                 <p className="text-[#60758a] text-sm font-normal leading-normal line-clamp-2">
-                  Due Today
+                  {category.task.length}
                 </p>
               </div>
             </div>

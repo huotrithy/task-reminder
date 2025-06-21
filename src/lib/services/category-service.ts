@@ -3,6 +3,7 @@
 import { getServerAuthSession } from "../auth";
 import { categoryRepository } from "../db/category-repository";
 import {
+  CategoryIncludeOptions,
   CreateCategoryInputs,
   createCategorySchema,
   DeleteCategoryInputs,
@@ -61,7 +62,9 @@ export async function updateCategory(formInput: UpdateCategoryInputs) {
   }
 }
 
-export async function getCategories() {
+export async function getCategories(
+  categoryIncludeOptions?: CategoryIncludeOptions
+) {
   try {
     const session = await getServerAuthSession();
     if (!session) {
@@ -69,7 +72,10 @@ export async function getCategories() {
     }
     const userId = session.user.id;
 
-    const categories = await categoryRepository.getCategories(userId);
+    const categories = await categoryRepository.getCategories(
+      userId,
+      categoryIncludeOptions
+    );
     return successResponse({ categories: categories });
   } catch {
     return errorResponse({}, "Something went wrong.");

@@ -8,7 +8,7 @@ import AppClient from "./page-client";
 import AddButtonMenu from "@/components/add-menu-button";
 
 export async function fetchCategory() {
-  const response = await getCategories();
+  const response = await getCategories({ includeTask: true });
   if (response.success) {
     return response.data;
   }

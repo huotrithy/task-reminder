@@ -19,3 +19,9 @@ export const deleteCategorySchema = z.object({
   categoryId: z.cuid(),
 });
 export type DeleteCategoryInputs = z.infer<typeof deleteCategorySchema>;
+
+/** Database retreive schemas */
+export interface CategoryIncludeOptions {
+  includeTask?: boolean;
+  includeUser?: boolean;
+}
