@@ -10,7 +10,7 @@ async function getTasks(categoryId: string) {
   return tasks;
 }
 
-async function createTask(taskData: CreateTaskInputs, categoryId: string) {
+async function createTask(taskData: CreateTaskInputs) {
   const createdTask = await prisma.task.create({
     data: {
       taskName: taskData.taskName,
@@ -18,7 +18,7 @@ async function createTask(taskData: CreateTaskInputs, categoryId: string) {
       deadline: taskData.deadline,
       isToSend: taskData.isToSend,
       isDelete: false,
-      categoryId: categoryId,
+      categoryId: taskData.categoryId,
     },
   });
   return createdTask;

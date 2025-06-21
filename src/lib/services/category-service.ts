@@ -115,7 +115,10 @@ export async function deleteCategory(formInput: DeleteCategoryInputs) {
       userId
     );
 
-    return successResponse({ category: deletedCategory });
+    return successResponse(
+      { category: deletedCategory },
+      "Category deleted successfully!"
+    );
   } catch {
     return errorResponse({}, "Something went wrong.");
   }

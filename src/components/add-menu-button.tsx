@@ -23,7 +23,9 @@ export default function AddButtonMenu() {
             </Button>
 
             <Button variant="outline" size="lg">
-              <LayoutList /> Task
+              <Link href="/app/task/add" className="flex items-center gap-2">
+                <LayoutList /> Task
+              </Link>
             </Button>
           </>
         )}
