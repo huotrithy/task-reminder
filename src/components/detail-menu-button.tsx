@@ -10,7 +10,7 @@ import { ErrorResponse, SuccessResponse } from "@/lib/types/type";
 interface Props {
   deleteTitle: string;
   onDelete: () => Promise<SuccessResponse<unknown> | ErrorResponse<unknown>>;
-  deleteSuccessRedirectUrl: string;
+  deleteSuccessRedirectUrl?: string;
   updateUrl: string;
 }
 
@@ -21,6 +21,7 @@ export default function DetailButtonMenu({
   onDelete,
 }: Props) {
   const [open, setOpen] = useState(false);
+
   return (
     <div className="absolute bottom-4 right-4 z-50">
       <div className="flex flex-col items-end gap-4">

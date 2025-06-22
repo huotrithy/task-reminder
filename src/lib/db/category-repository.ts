@@ -14,7 +14,11 @@ async function getCategories(
   // Dynamically include object
   const include: Prisma.CategoryInclude = {};
   if (includeOptions?.includeTask) {
-    include.task = true;
+    include.task = {
+      where: {
+        isDelete: false,
+      },
+    };
   }
   if (includeOptions?.includeUser) {
     include.User = true;
@@ -42,7 +46,11 @@ async function getCategory(
 ) {
   const include: Prisma.CategoryInclude = {};
   if (includeOptions?.includeTask) {
-    include.task = true;
+    include.task = {
+      where: {
+        isDelete: false,
+      },
+    };
   }
   if (includeOptions?.includeUser) {
     include.User = true;

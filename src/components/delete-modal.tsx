@@ -19,7 +19,7 @@ import { useState } from "react";
 interface Props {
   title: string;
   onDelete: () => Promise<SuccessResponse<unknown> | ErrorResponse<unknown>>;
-  successRedirectUrl: string;
+  successRedirectUrl?: string;
 }
 
 export function DeleteModal({ onDelete, title, successRedirectUrl }: Props) {
@@ -37,7 +37,7 @@ export function DeleteModal({ onDelete, title, successRedirectUrl }: Props) {
     onSuccess: (response) => {
       toast.success(response.message || "Delete successfully!");
       setOpen(false);
-      router.push(successRedirectUrl);
+      router.push(successRedirectUrl || "/app");
     },
     onError: (error) => {
       toast.error(`${error.message}`);

@@ -101,7 +101,6 @@ export async function getCategory(
     if (!category) {
       return errorResponse({}, "Category not found.");
     }
-    console.log(category);
 
     return successResponse({ category: category });
   } catch {

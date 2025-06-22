@@ -4,8 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchCategory } from "./page";
 import { CategoryListItem } from "@/components/app/category-list-item";
 import { Separator } from "@/components/ui/separator";
+import { usePreviousRoute } from "@/hooks/previous-route";
 
 export default function AppClient() {
+  usePreviousRoute();
+
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategory,

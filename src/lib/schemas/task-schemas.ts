@@ -8,3 +8,12 @@ export const createTaskSchema = z.object({
   categoryId: z.cuid().min(1, { message: "Invalid Category" }),
 });
 export type CreateTaskInputs = z.infer<typeof createTaskSchema>;
+
+export const deleteTaskSchema = z.object({
+  taskId: z.cuid(),
+});
+export type DeleteTaskInput = z.infer<typeof deleteTaskSchema>;
+
+export interface TaskIncludeOptions {
+  includeCategory?: boolean;
+}
