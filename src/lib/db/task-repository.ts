@@ -1,5 +1,10 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "../prisma";
-import { DeleteTaskInput, UpsertTaskInputs } from "../schemas/task-schemas";
+import {
+  DeleteTaskInput,
+  TaskIncludeOptions,
+  UpsertTaskInputs,
+} from "../schemas/task-schemas";
 
 async function getTasks(categoryId: string) {
   const tasks = await prisma.task.findMany({
@@ -11,7 +16,19 @@ async function getTasks(categoryId: string) {
   return tasks;
 }
 
-async function getTask(taskId: string, userId: string) {
+async function getTask(
+  taskId: string,
+  userId: string,
+  includeOptions?: TaskIncludeOptions
+) {
+  const include: Prisma.TaskInclude = {};
+  if (includeOptions?.includeCategory) {
+    include.Category = true;
+  }
+  const query = Prisma.validator<Prisma.TaskDefaultArgs>()({
+    include: include,
+  });
+
   const task = await prisma.task.findFirst({
     where: {
       id: taskId,
@@ -20,6 +37,7 @@ async function getTask(taskId: string, userId: string) {
         userId: userId,
       },
     },
+    ...query,
   });
 
   return task;

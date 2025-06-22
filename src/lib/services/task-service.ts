@@ -5,6 +5,7 @@ import { taskRepository } from "../db/task-repository";
 import {
   DeleteTaskInput,
   deleteTaskSchema,
+  TaskIncludeOptions,
   UpsertTaskInputs,
   upsertTaskSchema,
 } from "../schemas/task-schemas";
@@ -26,7 +27,10 @@ export async function getTasks() {
   }
 }
 
-export async function getTask(id: string) {
+export async function getTask(
+  id: string,
+  taskIncludeOptions?: TaskIncludeOptions
+) {
   try {
     const session = await getServerAuthSession();
     if (!session) {
@@ -34,7 +38,7 @@ export async function getTask(id: string) {
     }
     const userId = session.user.id;
 
-    const task = await taskRepository.getTask(id, userId);
+    const task = await taskRepository.getTask(id, userId, taskIncludeOptions);
     if (!task) {
       return errorResponse({}, "Task not found.");
     }

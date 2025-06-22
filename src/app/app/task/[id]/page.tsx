@@ -11,7 +11,7 @@ interface Props {
 }
 
 export async function fetchTask(taskId: string) {
-  const response = await getTask(taskId);
+  const response = await getTask(taskId, { includeCategory: true });
   if (response.success) {
     return response.data;
   }
