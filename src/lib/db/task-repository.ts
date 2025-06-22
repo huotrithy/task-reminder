@@ -1,5 +1,5 @@
 import { prisma } from "../prisma";
-import { CreateTaskInputs, DeleteTaskInput } from "../schemas/task-schemas";
+import { DeleteTaskInput, UpsertTaskInputs } from "../schemas/task-schemas";
 
 async function getTasks(categoryId: string) {
   const tasks = await prisma.task.findMany({
@@ -25,7 +25,7 @@ async function getTask(taskId: string, userId: string) {
   return task;
 }
 
-async function createTask(taskData: CreateTaskInputs) {
+async function createTask(taskData: UpsertTaskInputs) {
   const createdTask = await prisma.task.create({
     data: {
       taskName: taskData.taskName,
@@ -37,6 +37,30 @@ async function createTask(taskData: CreateTaskInputs) {
     },
   });
   return createdTask;
+}
+
+async function updateTask(
+  taskData: UpsertTaskInputs,
+  taskId: string,
+  userId: string
+) {
+  const updatedTask = await prisma.task.update({
+    where: {
+      id: taskId,
+      Category: {
+        userId: userId,
+      },
+    },
+    data: {
+      taskName: taskData.taskName,
+      desc: taskData.desc,
+      deadline: taskData.deadline,
+      isToSend: taskData.isToSend,
+      categoryId: taskData.categoryId,
+    },
+  });
+
+  return updatedTask;
 }
 
 async function deleteTask(taskData: DeleteTaskInput, userId: string) {
@@ -59,5 +83,6 @@ export const taskRepository = {
   getTasks,
   getTask,
   createTask,
+  updateTask,
   deleteTask,
 };
