@@ -81,11 +81,11 @@ export function NavBar() {
 
     authenticate: [
       {
-        title: "App",
+        title: "Setting",
         body: (
           <NavigationMenuItem>
             <NavigationMenuLink
-              href="/app"
+              href="/app/setting"
               // className={navigationMenuTriggerStyle()}
             >
               Setting
@@ -94,7 +94,7 @@ export function NavBar() {
         ),
         collapsedBody: (
           <div className="flex flex-col gap-6">
-            <Link href="/app" className="font-medium">
+            <Link href="/app/setting" className="font-medium">
               Setting
             </Link>
           </div>
