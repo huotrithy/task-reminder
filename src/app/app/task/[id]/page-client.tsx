@@ -7,6 +7,7 @@ import DetailButtonMenu from "@/components/detail-menu-button";
 import { deleteTask } from "@/lib/services/task-service";
 import { formatDateToString } from "@/components/utils";
 import {
+  BellRing,
   CalendarDays,
   Grid2x2Plus,
   LayoutList,
@@ -57,7 +58,7 @@ export default function PageClient({ taskId }: { taskId: string }) {
         <div className="flex gap-3 items-center">
           <Grid2x2Plus className="h-5 w-5" />
           <p className="leading-7 md:text-base text-sm">
-            {data?.task.Category.categoryName}
+            {data?.task.Category?.categoryName}
           </p>
         </div>
 
@@ -80,6 +81,17 @@ export default function PageClient({ taskId }: { taskId: string }) {
         <h5 className="scroll-m-20 my-2 md:text-lg text-base font-medium tracking-tight">
           Notifications History
         </h5>
+        {data?.task.NotificationHistory &&
+          data?.task.NotificationHistory.map((history, index) => {
+            return (
+              <div key={index} className="flex gap-3 items-center">
+                <BellRing className="h-5 w-5" />
+                <p className="leading-7 md:text-base text-sm">
+                  {formatDateToString(history?.createdAt)}
+                </p>
+              </div>
+            );
+          })}
       </div>
       {data?.task && (
         <DetailButtonMenu

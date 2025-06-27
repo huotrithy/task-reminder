@@ -20,7 +20,7 @@ export default function AppClient() {
   return (
     <>
       <h1 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0">
-        Tasks
+        All Tasks
       </h1>
       <Separator className="mb-2" />
       <div className="flex flex-col justify-start gap-4 bg-white min-h-[72px] py-2 ">

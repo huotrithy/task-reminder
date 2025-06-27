@@ -19,4 +19,5 @@ export type DeleteTaskInput = z.infer<typeof deleteTaskSchema>;
 // Retreive
 export interface TaskIncludeOptions {
   includeCategory?: boolean;
+  includeSentHistory?: boolean;
 }

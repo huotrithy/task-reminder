@@ -25,6 +25,16 @@ async function getTask(
   if (includeOptions?.includeCategory) {
     include.Category = true;
   }
+
+  if (includeOptions?.includeSentHistory) {
+    include.NotificationHistory = {
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 3,
+    };
+  }
+
   const query = Prisma.validator<Prisma.TaskDefaultArgs>()({
     include: include,
   });
