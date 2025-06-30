@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { Category, Task } from "@prisma/client";
+import { Task } from "@prisma/client";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 import { Checkbox } from "../ui/checkbox";
@@ -28,18 +28,32 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createTask, updateTask } from "@/lib/services/task-service";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { getCategories } from "@/lib/services/category-service";
 
 interface TaskFormProps {
-  categories: Category[];
   task?: Task;
 }
 
-export function TaskForm({ categories, task }: TaskFormProps) {
+export function TaskForm({ task }: TaskFormProps) {
   const router = useRouter();
+
+  const { data: categories } = useQuery({
+    queryKey: ["categoriesInput"],
+    queryFn: async () => {
+      const response = await getCategories();
+
+      if (response.success) {
+        return response.data.categories;
+      }
+
+      throw new Error(response.message || "An error has occured.");
+    },
+  });
+
   const form = useForm<UpsertTaskInputs>({
     resolver: zodResolver(upsertTaskSchema),
     defaultValues: task

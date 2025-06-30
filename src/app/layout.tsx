@@ -70,7 +70,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased scroll-smooth`}
       >
         <AppProvider>{children}</AppProvider>
-        <Toaster />
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

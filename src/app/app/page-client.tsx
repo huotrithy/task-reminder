@@ -1,10 +1,10 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { fetchCategory } from "./page";
 import { CategoryListItem } from "@/components/app/category-list-item";
 import { Separator } from "@/components/ui/separator";
 import { usePreviousRoute } from "@/hooks/previous-route";
+import { fetchCategory } from "./data";
 
 export default function AppClient() {
   usePreviousRoute();

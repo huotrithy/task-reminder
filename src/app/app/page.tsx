@@ -1,4 +1,3 @@
-import { getCategories } from "@/lib/services/category-service";
 import {
   dehydrate,
   HydrationBoundary,
@@ -6,15 +5,7 @@ import {
 } from "@tanstack/react-query";
 import AppClient from "./page-client";
 import AddButtonMenu from "@/components/add-menu-button";
-
-export async function fetchCategory() {
-  const response = await getCategories({ includeTask: true });
-  if (response.success) {
-    return response.data;
-  }
-
-  throw new Error(response.message || "An error has occured.");
-}
+import { fetchCategory } from "./data";
 
 export default async function Page() {
   const queryClient = new QueryClient();

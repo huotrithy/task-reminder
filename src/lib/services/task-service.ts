@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { getServerAuthSession } from "../auth";
 import { taskRepository } from "../db/task-repository";
 import {
@@ -15,7 +16,7 @@ export async function getTasks() {
   try {
     const session = await getServerAuthSession();
     if (!session) {
-      return errorResponse({}, "Unauthorize operation.");
+      return redirect("/login");
     }
     const userId = session.user.id;
 
@@ -34,7 +35,7 @@ export async function getTask(
   try {
     const session = await getServerAuthSession();
     if (!session) {
-      return errorResponse({}, "Unauthorize operation.");
+      return redirect("/login");
     }
     const userId = session.user.id;
 
@@ -52,7 +53,7 @@ export async function createTask(formInput: UpsertTaskInputs) {
   try {
     const session = await getServerAuthSession();
     if (!session) {
-      return errorResponse({}, "Unauthorize operation.");
+      return redirect("/login");
     }
 
     const validation = upsertTaskSchema.safeParse(formInput);
@@ -73,7 +74,7 @@ export async function updateTask(formInput: UpsertTaskInputs, taskId: string) {
   try {
     const session = await getServerAuthSession();
     if (!session) {
-      return errorResponse({}, "Unauthorize operation.");
+      return redirect("/login");
     }
     const userId = session.user.id;
 
@@ -104,7 +105,7 @@ export async function deleteTask(formInput: DeleteTaskInput) {
   try {
     const session = await getServerAuthSession();
     if (!session) {
-      return errorResponse({}, "Unauthorize operation.");
+      return redirect("/login");
     }
     const userId = session.user.id;
 

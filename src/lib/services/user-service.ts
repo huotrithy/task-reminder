@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { getServerAuthSession } from "../auth";
 import { userRepository } from "../db/user-repository";
 import {
@@ -12,7 +13,7 @@ export async function getUser() {
   try {
     const session = await getServerAuthSession();
     if (!session) {
-      return errorResponse({}, "Unauthorize operation.");
+      return redirect("/login");
     }
 
     const userId = session.user.id;
@@ -33,7 +34,7 @@ export async function upSertTelegramChatID(
   try {
     const session = await getServerAuthSession();
     if (!session) {
-      return errorResponse({}, "Unauthorize operation.");
+      return redirect("/login");
     }
 
     const validation = upsertTelegramChatIDSchema.safeParse(formInput);

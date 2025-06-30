@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { getServerAuthSession } from "../auth";
 import { categoryRepository } from "../db/category-repository";
 import {
@@ -17,7 +18,7 @@ export async function createCategory(formInput: CreateCategoryInputs) {
   try {
     const session = await getServerAuthSession();
     if (!session) {
-      return errorResponse({}, "Unauthorize operation.");
+      return redirect("/login");
     }
     const userId = session.user.id;
 
@@ -43,7 +44,7 @@ export async function updateCategory(formInput: UpdateCategoryInputs) {
   try {
     const session = await getServerAuthSession();
     if (!session) {
-      return errorResponse({}, "Unauthorize operation.");
+      return redirect("/login");
     }
 
     const validation = updateCategorySchema.safeParse(formInput);
@@ -68,7 +69,7 @@ export async function getCategories(
   try {
     const session = await getServerAuthSession();
     if (!session) {
-      return errorResponse({}, "Unauthorize operation.");
+      return redirect("/login");
     }
     const userId = session.user.id;
 
@@ -89,7 +90,7 @@ export async function getCategory(
   try {
     const session = await getServerAuthSession();
     if (!session) {
-      return errorResponse({}, "Unauthorize operation.");
+      return redirect("/login");
     }
     const userId = session.user.id;
 
@@ -112,7 +113,7 @@ export async function deleteCategory(formInput: DeleteCategoryInputs) {
   try {
     const session = await getServerAuthSession();
     if (!session) {
-      return errorResponse({}, "Unauthorize operation.");
+      return redirect("/login");
     }
     const userId = session.user.id;
 
@@ -120,6 +121,19 @@ export async function deleteCategory(formInput: DeleteCategoryInputs) {
     if (!validation.success) {
       const fieldErrors = validation.error.message;
       return errorResponse({}, fieldErrors);
+    }
+
+    const categoryTask = await categoryRepository.getCategory(
+      validation.data.categoryId,
+      userId,
+      { includeTask: true }
+    );
+
+    if (categoryTask) {
+      return errorResponse(
+        {},
+        "You cannot delete this Cateogory, There are task under it."
+      );
     }
 
     const deletedCategory = await categoryRepository.deleteCategory(

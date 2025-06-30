@@ -44,8 +44,8 @@ model Task {
     isToSend   Boolean   @map(name: "is_to_send")
     createdAt  DateTime  @default(now()) @map(name: "created_at")
     updatedAt  DateTime  @updatedAt @map(name: "updated_at")
-    Category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-    categoryId String?   @map(name: "category_id")
+    Category   Category? @relation(fields: [categoryId], references: [id], onUpdate: Cascade)
+    categoryId String    @map(name: "category_id")
 
     NotificationHistory NotificationHistory[]
 

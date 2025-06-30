@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { fetchTask } from "./page";
 import { TitleHeader } from "@/components/title-header";
 import DetailButtonMenu from "@/components/detail-menu-button";
 import { deleteTask } from "@/lib/services/task-service";
@@ -14,6 +13,7 @@ import {
   Pencil,
   Send,
 } from "lucide-react";
+import { fetchTask } from "./data";
 
 export default function PageClient({ taskId }: { taskId: string }) {
   const { data, isLoading, isError, error } = useQuery({

@@ -4,7 +4,7 @@ import { getCategory } from "@/lib/services/category-service";
 import { toast } from "sonner";
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function Page({ params }: Props) {

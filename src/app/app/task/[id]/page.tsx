@@ -1,25 +1,13 @@
-import { getTask } from "@/lib/services/task-service";
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
 import PageClient from "./page-client";
+import { fetchTask } from "./data";
 
 interface Props {
-  params: { id: string };
-}
-
-export async function fetchTask(taskId: string) {
-  const response = await getTask(taskId, {
-    includeCategory: true,
-    includeSentHistory: true,
-  });
-  if (response.success) {
-    return response.data;
-  }
-
-  throw new Error(response.message || "An error has occured.");
+  params: Promise<{ id: string }>;
 }
 
 export default async function Page({ params }: Props) {
