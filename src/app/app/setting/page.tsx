@@ -128,7 +128,7 @@ export default function Page() {
                   name="telegram_chat_id"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Task Name</FormLabel>
+                      <FormLabel>Telegram Chat ID</FormLabel>
                       <FormControl>
                         <Input
                           className="md:text-base text-sm"
