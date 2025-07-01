@@ -1,0 +1,66 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id                  String  @id @default(cuid())
+    name                String
+    email               String  @unique
+    password            String
+    telegram_chat_id    String?
+    within_days_to_send Int     @default(30)
+
+    createdAt DateTime @default(now()) @map(name: "created_at")
+    updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+    category Category[]
+
+    @@map(name: "user")
+}
+
+model Category {
+    id           String  @id @default(cuid())
+    categoryName String  @map(name: "category_name")
+    isDelete     Boolean @map(name: "is_delete")
+    User         User?   @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+    userId       String? @map(name: "user_id")
+
+    task Task[]
+
+    @@map(name: "category")
+}
+
+model Task {
+    id         String    @id @default(cuid())
+    taskName   String    @map(name: "task_name")
+    desc       String?
+    deadline   DateTime
+    isDelete   Boolean   @map(name: "is_delete")
+    isToSend   Boolean   @map(name: "is_to_send")
+    createdAt  DateTime  @default(now()) @map(name: "created_at")
+    updatedAt  DateTime  @updatedAt @map(name: "updated_at")
+    Category   Category? @relation(fields: [categoryId], references: [id], onUpdate: Cascade)
+    categoryId String    @map(name: "category_id")
+
+    NotificationHistory NotificationHistory[]
+
+    @@map(name: "task")
+}
+
+model NotificationHistory {
+    id           String   @id @default(cuid())
+    taskName     String   @map(name: "task_name")
+    deadline     DateTime
+    categoryName String   @map(name: "category_name")
+    createdAt    DateTime @default(now()) @map(name: "created_at")
+
+    task   Task   @relation(fields: [taskId], references: [id], onDelete: SetDefault, onUpdate: Cascade)
+    taskId String @map(name: "task_id")
+
+    @@map(name: "notification_history")
+}
