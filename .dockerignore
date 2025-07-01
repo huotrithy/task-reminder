@@ -12,3 +12,4 @@ LICENSE
 *.swp
 /scripts
 .env*
+*.sqlite3
