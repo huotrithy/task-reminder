@@ -78,7 +78,8 @@ export async function getCategories(
       categoryIncludeOptions
     );
     return successResponse({ categories: categories });
-  } catch {
+  } catch (error) {
+    console.log(error);
     return errorResponse({}, "Something went wrong.");
   }
 }
@@ -104,7 +105,8 @@ export async function getCategory(
     }
 
     return successResponse({ category: category });
-  } catch {
+  } catch (error) {
+    console.log(error);
     return errorResponse({}, "Something went wrong.");
   }
 }
@@ -145,7 +147,8 @@ export async function deleteCategory(formInput: DeleteCategoryInputs) {
       { category: deletedCategory },
       "Category deleted successfully!"
     );
-  } catch {
+  } catch (error) {
+    console.log(error);
     return errorResponse({}, "Something went wrong.");
   }
 }

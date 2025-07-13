@@ -23,7 +23,8 @@ export async function getTasks() {
     const tasks = await taskRepository.getTasks(userId);
 
     return successResponse({ tasks: tasks });
-  } catch {
+  } catch (error) {
+    console.log(error);
     return errorResponse({}, "Could not retrieve tasks.");
   }
 }
@@ -44,7 +45,8 @@ export async function getTask(
       return errorResponse({}, "Task not found.");
     }
     return successResponse({ task: task });
-  } catch {
+  } catch (error) {
+    console.log(error);
     return errorResponse({}, "Could not retrieve tasks.");
   }
 }
@@ -125,7 +127,8 @@ export async function deleteTask(formInput: DeleteTaskInput) {
     }
 
     return successResponse({ task: deletedTask }, "Task deleted successfully!");
-  } catch {
+  } catch (error) {
+    console.log(error);
     return errorResponse({}, "Something went wrong.");
   }
 }

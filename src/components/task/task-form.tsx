@@ -198,6 +198,8 @@ export function TaskForm({ task }: TaskFormProps) {
                     selected={field.value}
                     onSelect={field.onChange}
                     captionLayout="dropdown"
+                    startMonth={new Date(2000, 0)}
+                    endMonth={new Date(2100, 0)}
                   />
                 </PopoverContent>
               </Popover>
