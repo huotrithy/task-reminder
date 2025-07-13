@@ -4,7 +4,12 @@ import bcrypt from "bcryptjs";
 import { userRepository } from "../db/user-repository";
 import { SALTROUNDS } from "../constants";
 import { errorResponse, successResponse } from "../utils";
-import { LoginInputs, loginSchema, signupSchema } from "../schemas/auth-schemas";
+import {
+  LoginInputs,
+  loginSchema,
+  SignupFormInputs,
+  signupSchema,
+} from "../schemas/auth-schemas";
 
 export async function login({ email, password }: LoginInputs) {
   try {
@@ -38,14 +43,8 @@ export async function login({ email, password }: LoginInputs) {
   }
 }
 
-export async function signup(formData: FormData) {
+export async function signup(formInput: SignupFormInputs) {
   try {
-    const formInput = {
-      email: formData.get("email"),
-      password: formData.get("password"),
-      confirmPassword: formData.get("confirm-password"),
-    };
-
     const validation = signupSchema.safeParse(formInput);
     if (!validation.success) {
       const fieldErrors = validation.error.message;
@@ -62,7 +61,9 @@ export async function signup(formData: FormData) {
     const hashedPassword = await bcrypt.hash(password, SALTROUNDS);
     const createdUser = await userRepository.createUser(email, hashedPassword);
     return successResponse({ user: createdUser });
-  } catch {
-    return errorResponse({}, "Signup failed: An unexpected error occurred.");
+    
+  } catch (error) {
+    console.log(error);
+    return errorResponse({}, "An unexpected error occurred.");
   }
 }

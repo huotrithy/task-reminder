@@ -4,12 +4,22 @@ import { GalleryVerticalEnd } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
 import { signup } from "@/lib/services/auth-service";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { SignupFormInputs, signupSchema } from "@/lib/schemas/auth-schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./ui/form";
 
 export default function SignUpForm({
   className,
@@ -17,10 +27,19 @@ export default function SignUpForm({
 }: React.ComponentProps<"div">) {
   const router = useRouter();
 
+  const form = useForm<SignupFormInputs>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
   const mutation = useMutation({
-    mutationFn: async (formData: FormData) => {
-      const response = await signup(formData);
-      console.log(response.success);
+    mutationFn: async (formInput: SignupFormInputs) => {
+      const response = await signup(formInput);
+
       if (response.success) {
         return response.data;
       } else {
@@ -29,80 +48,114 @@ export default function SignUpForm({
     },
     onSuccess: () => {
       toast.success("Signup success");
+      form.reset();
       router.push("/login");
     },
     onError: (error: Error) => {
-      toast.error(`Signup failed: ${error.message}`);
+      toast.error(`${error.message}`);
     },
   });
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    mutation.mutate(formData);
+  async function handleSubmit(data: SignupFormInputs) {
+    mutation.mutate(data);
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <form onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col items-center gap-2">
-            <Link
-              href="/"
-              className="flex flex-col items-center gap-2 font-medium"
-            >
-              <div className="flex size-8 items-center justify-center rounded-md">
-                <GalleryVerticalEnd className="size-6" />
+    <Form {...form}>
+      <div className={cn("flex flex-col gap-6", className)} {...props}>
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="space-y-8 mt-6 flex flex-col"
+        >
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col items-center gap-2">
+              <Link
+                href="/"
+                className="flex flex-col items-center gap-2 font-medium"
+              >
+                <div className="flex size-8 items-center justify-center rounded-md">
+                  <GalleryVerticalEnd className="size-6" />
+                </div>
+                <span className="sr-only">Task Reminder.</span>
+              </Link>
+              <h1 className="text-xl font-bold">Welcome to Task Reminder.</h1>
+              <div className="text-center text-sm">
+                Already have an account?{" "}
+                <Button variant="link" className="p-1">
+                  <Link href="/login" className="underline underline-offset-4">
+                    Login
+                  </Link>
+                </Button>
               </div>
-              <span className="sr-only">Task Reminder.</span>
-            </Link>
-            <h1 className="text-xl font-bold">Welcome to Task Reminder.</h1>
-            <div className="text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Button variant="link" className="p-1">
-                <Link href="/login" className="underline underline-offset-4">
-                  Login
-                </Link>
+            </div>
+            <div className="flex flex-col gap-6">
+              <div className="grid gap-3">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl className="mt-0.5">
+                        <Input
+                          placeholder="m@example.com"
+                          type="email"
+                          required
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid gap-3">
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl className="mt-0.5">
+                        <Input
+                          placeholder="***"
+                          type="password"
+                          required
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid gap-3">
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <FormControl className="mt-0.5">
+                        <Input
+                          placeholder="***"
+                          type="password"
+                          required
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <Button type="submit" className="w-full">
+                {mutation.isPending ? "Signing up..." : "Signup"}
               </Button>
             </div>
           </div>
-          <div className="flex flex-col gap-6">
-            <div className="grid gap-3">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                name="email"
-                placeholder="m@example.com"
-                required
-              />
-            </div>
-            <div className="grid gap-3">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                name="password"
-                placeholder="***"
-                required
-              />
-            </div>
-            <div className="grid gap-3">
-              <Label htmlFor="confirm-password">Confirm Password</Label>
-              <Input
-                id="confirm-password"
-                type="password"
-                name="confirm-password"
-                placeholder="***"
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full">
-              {mutation.isPending ? "Signing up..." : "Signup"}
-            </Button>
-          </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </Form>
   );
 }
