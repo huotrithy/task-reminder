@@ -23,7 +23,8 @@ export async function getUser() {
     }
 
     return successResponse({ user: user });
-  } catch {
+  } catch (error) {
+    console.log(error);
     return errorResponse({}, "Something went wrong.");
   }
 }
