@@ -5,11 +5,11 @@ import { Button } from "./ui/button";
 import { useState } from "react";
 import Link from "next/link";
 import { DeleteModal } from "./delete-modal";
-import { ErrorResponse, SuccessResponse } from "@/lib/types/type";
+import { ServerResponse } from "@/shared/types/type";
 
 interface Props {
   deleteTitle: string;
-  onDelete: () => Promise<SuccessResponse<unknown> | ErrorResponse<unknown>>;
+  onDelete: () => Promise<ServerResponse>;
   deleteSuccessRedirectUrl?: string;
   updateUrl: string;
 }

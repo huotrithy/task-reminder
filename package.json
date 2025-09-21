@@ -38,6 +38,9 @@
     "react-hook-form": "^7.58.1",
     "sonner": "^2.0.5",
     "tailwind-merge": "^3.3.0",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "winston-transport": "^4.9.0",
     "zod": "^3.25.67"
   },
   "devDependencies": {

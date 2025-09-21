@@ -12,13 +12,13 @@ import {
 } from "./ui/dialog";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ErrorResponse, SuccessResponse } from "@/lib/types/type";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ServerResponse } from "@/shared/types/type";
 
 interface Props {
   title: string;
-  onDelete: () => Promise<SuccessResponse<unknown> | ErrorResponse<unknown>>;
+  onDelete: () => Promise<ServerResponse>;
   successRedirectUrl?: string;
 }
 
