@@ -1,3 +1,4 @@
+import { MobileNav } from "@/components/mobile-nav";
 import { NavBar } from "@/components/nav-bar";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -8,6 +9,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <main className="relative container max-w-7xl grow mx-auto px-5 mt-4">
           {children}
         </main>
+        <MobileNav />
       </div>
     </div>
   );
