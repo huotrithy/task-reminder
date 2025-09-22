@@ -44,7 +44,7 @@ export default function DetailButtonMenu({
         <Button
           variant="default"
           size="lg"
-          className="bg-gray-900 text-gray-50 w-fit hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
+          className="bg-primary text-primary-foreground w-fit hover:bg-secondary hover:text-secondary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:bg-primary dark:text-primary-foreground dark:hover:bg-secondary dark:hover:text-secondary-foreground dark:focus-visible:ring-ring"
           onClick={() => setOpen(!open)}
         >
           {open === true ? (
