@@ -1,4 +1,4 @@
-import { House, Settings } from "lucide-react";
+import { ChartPie, House, Settings } from "lucide-react";
 
 export const menu = {
   unauthenticate: [],
@@ -8,6 +8,11 @@ export const menu = {
       title: "Home",
       href: "/app",
       icon: House,
+    },
+    {
+      title: "Dashboard",
+      href: "/app/dashboard",
+      icon: ChartPie,
     },
     {
       title: "Setting",

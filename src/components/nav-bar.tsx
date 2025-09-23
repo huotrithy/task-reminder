@@ -12,9 +12,11 @@ import Link from "next/link";
 import React from "react";
 import { signOut, useSession } from "next-auth/react";
 import { menu } from "@/shared/const";
+import { usePathname } from "next/navigation";
 
 export function NavBar() {
   const session = useSession();
+  const pathName = usePathname();
   // const [isOpenMenu, setOpenMenu] = useState(false);
 
   // function handleScroll(e: React.MouseEvent, id: string) {
@@ -52,12 +54,15 @@ export function NavBar() {
                 Task Reminder
               </span>
             </Link>
-            <NavigationMenu className="hidden lg:block">
+            <NavigationMenu className="hidden md:block">
               <NavigationMenuList>
                 {session.status === "authenticated" &&
                   menu.authenticate.map((item, index) => (
                     <NavigationMenuItem key={index}>
-                      <NavigationMenuLink asChild>
+                      <NavigationMenuLink
+                        asChild
+                        data-active={pathName === item.href}
+                      >
                         <Link href={item.href}>{item.title}</Link>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
@@ -66,7 +71,7 @@ export function NavBar() {
             </NavigationMenu>
           </div>
 
-          <div className="hidden items-center gap-4 lg:flex">
+          <div className="hidden items-center gap-4 md:flex">
             {session.status === "authenticated" ? (
               <Button variant="outline" onClick={handleLogout}>
                 Logout

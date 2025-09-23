@@ -1,8 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { TitleHeader } from "@/components/title-header";
-import DetailButtonMenu from "@/components/detail-menu-button";
+
+import DetailButtonMenu from "@/components/float-btn/detail-menu-button";
 import { deleteTask } from "@/lib/services/task-service";
 import { formatDateToString } from "@/components/utils";
 import {
@@ -14,20 +14,26 @@ import {
   Send,
 } from "lucide-react";
 import { fetchTask } from "./data";
+import PageHeader from "@/components/page-header/page-header";
+import MainContentWrapper from "@/components/main-content-wrapper";
+import { useState } from "react";
+import { TaskForm } from "@/components/task/task-form";
 
 export default function PageClient({ taskId }: { taskId: string }) {
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["task"],
     queryFn: () => fetchTask(taskId),
   });
 
+  const [openUpdateForm, setOpenUpdateForm] = useState(false);
+
   if (isLoading) return <div>Loading task...</div>;
-  if (isError) return <div>Error: {error?.message}</div>;
+  if (isError || !data) return <div>Error: {error?.message}</div>;
 
   return (
     <div>
-      <TitleHeader title="Task Detail" backLink="/app" />
-      <div>
+      <PageHeader title="Task Detail" backLink="/app" />
+      <MainContentWrapper>
         <h4 className="scroll-m-20 my-2 text-xl font-semibold tracking-tight">
           {data?.task.taskName}
         </h4>
@@ -92,15 +98,21 @@ export default function PageClient({ taskId }: { taskId: string }) {
               </div>
             );
           })}
-      </div>
-      {data?.task && (
-        <DetailButtonMenu
-          updateUrl={`/app/task/update/${data.task.id}`}
-          deleteTitle={`Delete Task: ${data.task.taskName}`}
-          deleteSuccessRedirectUrl={`/app/category/${data.task.categoryId}`}
-          onDelete={() => deleteTask({ taskId: data.task.id })}
-        />
-      )}
+      </MainContentWrapper>
+
+      <DetailButtonMenu
+        deleteTitle={`Delete Task - ${data.task.taskName}`}
+        deleteSuccessRedirectUrl={`/app/category/${data.task.categoryId}`}
+        onDelete={() => deleteTask({ taskId: data.task.id })}
+        setUpdateOpen={setOpenUpdateForm}
+      />
+
+      <TaskForm
+        task={data.task}
+        open={openUpdateForm}
+        setOpen={setOpenUpdateForm}
+        refetch={refetch}
+      />
     </div>
   );
 }

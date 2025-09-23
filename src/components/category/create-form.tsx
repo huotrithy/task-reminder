@@ -18,12 +18,26 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { createCategory } from "@/lib/services/category-service";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { QueryObserverResult, useMutation } from "@tanstack/react-query";
 
-export function CreateCategoryForm() {
-  const router = useRouter();
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
+import { Dispatch, SetStateAction } from "react";
 
+type Props = {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+
+  refect: () => Promise<QueryObserverResult>;
+};
+
+export function CreateCategoryForm(props: Props) {
   const form = useForm<CreateCategoryInputs>({
     resolver: zodResolver(createCategorySchema),
     defaultValues: {
@@ -41,8 +55,8 @@ export function CreateCategoryForm() {
     },
     onSuccess: () => {
       toast.success("Category created successfully!");
-      form.reset();
-      router.push("/app");
+      props.setOpen(false);
+      props.refect();
     },
     onError: (error) => {
       toast.error(`${error.message}`);
@@ -54,33 +68,43 @@ export function CreateCategoryForm() {
   };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-8 mt-6 flex flex-col"
-      >
-        <FormField
-          control={form.control}
-          name="categoryName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Category Name</FormLabel>
-              <FormControl className="mt-0.5">
-                <Input placeholder="Enter category name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <Dialog open={props.open} onOpenChange={props.setOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create new Category</DialogTitle>
+        </DialogHeader>
 
-        <Button
-          type="submit"
-          disabled={mutation.isPending}
-          className="self-end"
-        >
-          {mutation.isPending ? "Submitting..." : "Create Category"}
-        </Button>
-      </form>
-    </Form>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-8 mt-6 flex flex-col"
+          >
+            <FormField
+              control={form.control}
+              name="categoryName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category Name</FormLabel>
+                  <FormControl className="mt-0.5">
+                    <Input placeholder="Enter category name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter className="mt-4">
+              <DialogClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DialogClose>
+
+              <Button type="submit" disabled={mutation.isPending}>
+                {mutation.isPending ? "Submitting..." : "Create Category"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -6,8 +6,7 @@ import {
 } from "@/lib/schemas/category-schema";
 import { updateCategory } from "@/lib/services/category-service";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { QueryObserverResult, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
@@ -21,15 +20,29 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Category } from "@prisma/client";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
+import { Dispatch, SetStateAction } from "react";
 
-export function UpdateCategoryForm(initialData: Category) {
-  const router = useRouter();
+type Props = {
+  initialData: Category;
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  refetch: () => Promise<QueryObserverResult>;
+};
 
+export function UpdateCategoryForm(props: Props) {
   const form = useForm<UpdateCategoryInputs>({
     resolver: zodResolver(updateCategorySchema),
     defaultValues: {
-      categoryName: initialData.categoryName,
-      categoryId: initialData.id,
+      categoryName: props.initialData.categoryName,
+      categoryId: props.initialData.id,
     },
   });
 
@@ -42,9 +55,9 @@ export function UpdateCategoryForm(initialData: Category) {
       throw new Error(response.message);
     },
     onSuccess: () => {
-      toast.success("Category created successfully!");
-      form.reset();
-      router.push("/app");
+      toast.success("Category updated successfully!");
+      props.setOpen(false);
+      props.refetch();
     },
     onError: (error) => {
       toast.error(`${error.message}`);
@@ -58,47 +71,57 @@ export function UpdateCategoryForm(initialData: Category) {
   };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit, onInvalid)}
-        className="space-y-8 mt-6 flex flex-col"
-      >
-        <FormField
-          control={form.control}
-          name="categoryName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Category Name</FormLabel>
-              <FormControl className="mt-0.5">
-                <Input placeholder="Enter category name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <Dialog open={props.open} onOpenChange={props.setOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add new Category</DialogTitle>
+        </DialogHeader>
 
-        <FormField
-          control={form.control}
-          name="categoryId"
-          render={({ field }) => (
-            <FormItem hidden>
-              <FormLabel>Category Id</FormLabel>
-              <FormControl className="mt-0.5">
-                <Input placeholder="Category ID" disabled {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit, onInvalid)}
+            className="space-y-8 mt-6 flex flex-col"
+          >
+            <FormField
+              control={form.control}
+              name="categoryName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category Name</FormLabel>
+                  <FormControl className="mt-0.5">
+                    <Input placeholder="Enter category name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <Button
-          type="submit"
-          disabled={mutation.isPending}
-          className="self-end"
-        >
-          {mutation.isPending ? "Submitting..." : "Update Category"}
-        </Button>
-      </form>
-    </Form>
+            <FormField
+              control={form.control}
+              name="categoryId"
+              render={({ field }) => (
+                <FormItem hidden>
+                  <FormLabel>Category Id</FormLabel>
+                  <FormControl className="mt-0.5">
+                    <Input placeholder="Category ID" disabled {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter className="mt-4">
+              <DialogClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DialogClose>
+
+              <Button type="submit" disabled={mutation.isPending}>
+                {mutation.isPending ? "Submitting..." : "Update Category"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }

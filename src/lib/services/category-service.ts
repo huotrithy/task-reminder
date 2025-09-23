@@ -122,6 +122,8 @@ export async function getCategory(
 
 export async function deleteCategory(formInput: DeleteCategoryInputs) {
   try {
+    logger.info(formInput);
+
     const session = await getServerAuthSession();
     if (!session) {
       logger.error(ERROR_MESSAGE.UNAUTHENTICATED);
@@ -142,7 +144,7 @@ export async function deleteCategory(formInput: DeleteCategoryInputs) {
       { includeTask: true }
     );
 
-    if (categoryTask) {
+    if (categoryTask?.task && categoryTask?.task.length > 0) {
       logger.warn(ERROR_MESSAGE.DELETE_ACTIVE_CATEGORY);
       return errorResponse(ERROR_MESSAGE.DELETE_ACTIVE_CATEGORY);
     }

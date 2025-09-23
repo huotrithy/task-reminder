@@ -18,7 +18,7 @@ import { ServerResponse } from "@/shared/types/type";
 
 interface Props {
   title: string;
-  onDelete: () => Promise<ServerResponse>;
+  onDelete: () => Promise<ServerResponse<object>>;
   successRedirectUrl?: string;
 }
 
@@ -54,17 +54,18 @@ export function DeleteModal({ onDelete, title, successRedirectUrl }: Props) {
           </Button>
         </DialogTrigger>
 
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
+            <DialogDescription>Are you sure?</DialogDescription>
           </DialogHeader>
-          <DialogDescription>Are you sure?</DialogDescription>
-          <DialogFooter>
+          <DialogFooter className="mt-4">
             <DialogClose asChild>
               <Button variant="outline" size="sm">
                 Cancel
               </Button>
             </DialogClose>
+
             <Button
               type="button"
               size="sm"

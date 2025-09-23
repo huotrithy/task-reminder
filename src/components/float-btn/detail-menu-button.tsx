@@ -1,42 +1,44 @@
 "use client";
 
 import { EllipsisVertical, Pencil, X } from "lucide-react";
-import { Button } from "./ui/button";
-import { useState } from "react";
-import Link from "next/link";
-import { DeleteModal } from "./delete-modal";
+import { Button } from "../ui/button";
+import { Dispatch, SetStateAction, useState } from "react";
+
+import { DeleteModal } from "../delete-modal";
 import { ServerResponse } from "@/shared/types/type";
 
 interface Props {
   deleteTitle: string;
-  onDelete: () => Promise<ServerResponse>;
+  onDelete: () => Promise<ServerResponse<object>>;
   deleteSuccessRedirectUrl?: string;
-  updateUrl: string;
+
+  setUpdateOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function DetailButtonMenu({
-  updateUrl,
-  deleteTitle,
-  deleteSuccessRedirectUrl,
-  onDelete,
-}: Props) {
+export default function DetailButtonMenu(props: Props) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="absolute bottom-4 right-4 z-50">
+    <div className="absolute bottom-20 md:bottom-4 right-4 z-50">
       <div className="flex flex-col items-end gap-4">
         {open && (
           <>
-            <Button variant="outline" size="lg">
-              <Link href={updateUrl} className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => {
+                props.setUpdateOpen(true);
+              }}
+            >
+              <div className="flex items-center gap-2">
                 <Pencil /> Update
-              </Link>
+              </div>
             </Button>
 
             <DeleteModal
-              title={deleteTitle}
-              onDelete={onDelete}
-              successRedirectUrl={deleteSuccessRedirectUrl}
+              title={props.deleteTitle}
+              onDelete={props.onDelete}
+              successRedirectUrl={props.deleteSuccessRedirectUrl}
             />
           </>
         )}
