@@ -9,29 +9,37 @@ interface Props {
 
 export function TaskList({ tasks }: Props) {
   return (
-    <ul className="space-y-2 pt-2">
+    <ul className="space-y-3 pt-4">
       {tasks &&
-        tasks.map((task, index) => (
-          <Link key={index} href={`/app/task/${task.id}`} className="block">
-            <li className="p-2 border rounded-md bg-gray-50 flex flex-col gap-1 shadow-md">
-              <div className="flex justify-between">
-                {task.taskName}
-                {task.isToSend === true ? (
-                  <Badge variant="secondary" className="py-1 bg-blue-100">
-                    Notification On
-                  </Badge>
-                ) : (
-                  <Badge variant="secondary" className="py-1">
-                    Notification Off
-                  </Badge>
-                )}
+        tasks.map((task) => (
+          <Link
+            key={task.id}
+            href={`/app/task/${task.id}`}
+            className="block group"
+          >
+            <li className="rounded-xl border border-gray-100 bg-white p-4 transition-colors hover:bg-gray-50 hover:shadow-sm">
+              <div className="flex justify-between items-center">
+                <span className="font-medium text-gray-800 group-hover:text-gray-900">
+                  {task.taskName}
+                </span>
+                <Badge
+                  variant="secondary"
+                  className={`py-0.5 text-xs font-medium transition ${
+                    task.isToSend
+                      ? "bg-blue-50 text-blue-700"
+                      : "bg-gray-100 text-gray-500"
+                  }`}
+                >
+                  {task.isToSend ? "Notification On" : "Notification Off"}
+                </Badge>
               </div>
 
-              <p className="text-sm leading-none font-medium">
+              <p className="text-xs text-gray-500 mt-2">
                 Deadline: {formatDateToString(task.deadline)}
               </p>
+
               {task.desc && (
-                <p className="mt-1 text-sm/8 text-pretty lg:line-clamp-2 line-clamp-3 leading-none font-medium">
+                <p className="mt-2 text-sm text-gray-600 lg:line-clamp-2 line-clamp-3">
                   {task.desc}
                 </p>
               )}

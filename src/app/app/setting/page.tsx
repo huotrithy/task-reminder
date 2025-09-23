@@ -92,22 +92,25 @@ export default function Page() {
           <Collapsible
             open={openTelegramConnect}
             onOpenChange={setOpenTelegramConnect}
-            className="overflow-hidden"
+            className="rounded-2xl border border-gray-100 bg-white shadow-sm p-5 transition hover:shadow-md"
           >
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <h5 className="scroll-m-20 mt-2 md:text-lg text-base font-medium tracking-tight">
+                <h5 className="text-base md:text-lg font-semibold text-gray-900 tracking-tight">
                   Telegram Integration
                 </h5>
-                <p className="mt-1 md:text-base text-sm">
-                  Connect your telegram account for reminder
+                <p className="mt-1 text-sm md:text-base text-gray-500">
+                  Connect your Telegram account to get reminders.
                 </p>
               </div>
+
               <CollapsibleTrigger asChild>
                 {openTelegramConnect ? (
-                  <Button variant="secondary">Cancel</Button>
+                  <Button variant="outline" className="text-sm md:text-base">
+                    Cancel
+                  </Button>
                 ) : (
-                  <Button asChild>
+                  <Button asChild className="text-sm md:text-base">
                     <Link
                       href="https://t.me/reminder_autobot_bot"
                       target="_blank"
@@ -120,22 +123,24 @@ export default function Page() {
               </CollapsibleTrigger>
             </div>
 
-            <CollapsibleContent className="shadow-md border-2 p-2 mt-2">
+            <CollapsibleContent className="mt-4 rounded-xl border border-gray-100 bg-gray-50 p-4 shadow-inner">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(handleSubmit)}
-                  className="space-y-6  mt-2 flex flex-col"
+                  className="space-y-6 mt-2 flex flex-col"
                 >
                   <FormField
                     control={form.control}
                     name="telegram_chat_id"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Telegram Chat ID</FormLabel>
+                        <FormLabel className="text-sm md:text-base font-medium text-gray-800">
+                          Telegram Chat ID
+                        </FormLabel>
                         <FormControl>
                           <Input
                             className="md:text-base text-sm"
-                            placeholder="Enter the chat id you received from the bot"
+                            placeholder="Enter the chat ID you received from the bot"
                             {...field}
                           />
                         </FormControl>
@@ -146,7 +151,7 @@ export default function Page() {
                   <Button
                     type="submit"
                     disabled={mutation.isPending}
-                    className="self-end mt-0"
+                    className="self-end mt-0 md:text-base"
                   >
                     {mutation.isPending ? "Submitting..." : "Save"}
                   </Button>

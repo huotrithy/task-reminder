@@ -1,3 +1,5 @@
-export default function Page() {
-  return <h1>Dashboard</h1>;
+import PageClient from "./page-client";
+
+export default async function Page() {
+  return <PageClient />;
 }
