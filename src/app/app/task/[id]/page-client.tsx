@@ -19,6 +19,7 @@ import { fetchTask } from "./data";
 import PageHeader from "@/components/page-header/page-header";
 import MainContentWrapper from "@/components/main-content-wrapper";
 import { TaskForm } from "@/components/task/task-form";
+import MdPageHeader from "@/components/page-header/md-page-header";
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
@@ -56,14 +57,14 @@ export default function PageClient({ taskId }: { taskId: string }) {
     return <div className="p-4 text-red-500">Error: {error?.message}</div>;
 
   const task = data.task;
+  const pageTitle = `Task - ${task.taskName}`;
+  const pageDesc = "View your task details";
+  const backLink = `/app/category/${task.categoryId}`;
 
   return (
-    <div>
-      <PageHeader
-        title={`Task - ${task.taskName}`}
-        desc="View your task details"
-        backLink={`/app/category/${task.categoryId}`}
-      />
+    <>
+      <PageHeader title={pageTitle} desc={pageDesc} backLink={backLink} />
+      <MdPageHeader title={pageTitle} desc={pageDesc} backLink={backLink} />
 
       <MainContentWrapper>
         <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
@@ -140,6 +141,6 @@ export default function PageClient({ taskId }: { taskId: string }) {
         setOpen={setOpenUpdateForm}
         refetch={refetch}
       />
-    </div>
+    </>
   );
 }

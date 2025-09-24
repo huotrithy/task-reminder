@@ -61,6 +61,7 @@ export function NavBar() {
                     <NavigationMenuItem key={index}>
                       <NavigationMenuLink
                         asChild
+                        className="data-[active=true]:bg-primary/20"
                         data-active={pathName === item.href}
                       >
                         <Link href={item.href}>{item.title}</Link>

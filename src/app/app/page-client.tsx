@@ -2,7 +2,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { CategoryListItem } from "@/components/app/category-list-item";
-
 import { usePreviousRoute } from "@/hooks/previous-route";
 import { fetchCategory } from "./data";
 import PageHeader from "@/components/page-header/page-header";

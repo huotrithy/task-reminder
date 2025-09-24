@@ -9,6 +9,7 @@ import PageHeader from "@/components/page-header/page-header";
 import MainContentWrapper from "@/components/main-content-wrapper";
 import { UpdateCategoryForm } from "@/components/category/update-form";
 import { useState } from "react";
+import MdPageHeader from "@/components/page-header/md-page-header";
 
 export default function PageClient({ categoryId }: { categoryId: string }) {
   const { data, isLoading, isError, error, refetch } = useQuery({
@@ -21,13 +22,13 @@ export default function PageClient({ categoryId }: { categoryId: string }) {
   if (isLoading) return <div>Loading tasks...</div>;
   if (isError || !data) return <div>Error: {error?.message}</div>;
 
+  const pageTitle = `Category - ${data.category.categoryName}`;
+  const pageDesc = `${data.category.task.length} Tasks`;
+
   return (
     <div>
-      <PageHeader
-        title={`Category - ${data.category.categoryName}`}
-        desc={`${data.category.task.length} Tasks`}
-        backLink="/app"
-      />
+      <PageHeader title={pageTitle} desc={pageDesc} backLink="/app" />
+      <MdPageHeader title={pageTitle} desc={pageDesc} backLink="/app" />
       <MainContentWrapper>
         <TaskList tasks={data.category.task} />
       </MainContentWrapper>

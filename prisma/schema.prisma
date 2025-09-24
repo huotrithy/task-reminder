@@ -43,8 +43,8 @@ model Task {
     isDelete   Boolean   @map(name: "is_delete")
     isToSend   Boolean   @map(name: "is_to_send")
     
-    reminderDeadline DateTime?
-    reminderPeriodDay Int?
+    reminderDeadline DateTime? @map(name: "reminder_deadline")
+    reminderPeriodDay Int? @map(name: "reminder_period_day")
 
     createdAt  DateTime  @default(now()) @map(name: "created_at")
     updatedAt  DateTime  @updatedAt @map(name: "updated_at")
