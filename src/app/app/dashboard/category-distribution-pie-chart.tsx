@@ -1,7 +1,7 @@
 "use client";
 
 import { RefreshCw } from "lucide-react";
-import { Pie, PieChart } from "recharts";
+import { Pie, PieChart, Sector } from "recharts";
 import {
   Card,
   CardContent,
@@ -19,6 +19,15 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchTasksByCategory } from "./data";
 import { generateColorFromString } from "@/lib/client-utils";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useMemo, useState } from "react";
+import { PieSectorDataItem } from "recharts/types/polar/Pie";
 
 export const description = "A pie chart with a label list";
 
@@ -29,10 +38,20 @@ export function CategoryDistributionPieChart() {
   });
 
   // filter out empty categories
-  const chartDataRaw =
-    data?.serializedResult?.filter((d) => d.tasksCount > 0) ?? [];
+  const chartDataRaw = useMemo(() => {
+    return data?.serializedResult?.filter((d) => d.tasksCount > 0) ?? [];
+  }, [data]);
 
   const totalTasks = chartDataRaw.reduce((acc, d) => acc + d.tasksCount, 0);
+
+  const [activeCategory, setActiveCategory] = useState(
+    chartDataRaw.length > 0 ? chartDataRaw[0].categoryName : undefined
+  );
+  const activeIndex = useMemo(
+    () =>
+      chartDataRaw.findIndex((item) => item.categoryName === activeCategory),
+    [activeCategory, chartDataRaw]
+  );
 
   const chartData = chartDataRaw.map((d) => ({
     category: d.categoryName,
@@ -52,9 +71,47 @@ export function CategoryDistributionPieChart() {
 
   return (
     <Card className="flex flex-col rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all hover:shadow-md hover:border-gray-300">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Your number of Tasks by each Category</CardTitle>
-        <CardDescription>Total number of task {totalTasks}</CardDescription>
+      <CardHeader className="flex-row items-start space-y-0 pb-0">
+        <div>
+          <CardTitle>Your number of Tasks by each Category</CardTitle>
+          <CardDescription>Total number of task {totalTasks}</CardDescription>
+        </div>
+        <Select value={activeCategory} onValueChange={setActiveCategory}>
+          <SelectTrigger
+            className="ml-auto h-7 w-2/5 rounded-lg pl-2.5"
+            aria-label="Select a category"
+          >
+            <SelectValue placeholder="Select a category" />
+          </SelectTrigger>
+          <SelectContent align="end" className="rounded-xl">
+            {chartData.map((d, idx) => {
+              const config =
+                chartConfig[d.category as keyof typeof chartConfig];
+
+              if (!config) {
+                return null;
+              }
+
+              return (
+                <SelectItem
+                  key={idx}
+                  value={d.category}
+                  className="rounded-lg [&_span]:flex"
+                >
+                  <div className="flex items-center gap-2 text-xs">
+                    <span
+                      className="flex h-3 w-3 shrink-0 rounded-xs"
+                      style={{
+                        backgroundColor: `${d.fill}`,
+                      }}
+                    />
+                    {config?.label}
+                  </div>
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
       </CardHeader>
       <CardContent className="flex-1 pb-4 flex items-center justify-center">
         {isLoading && (
@@ -94,6 +151,20 @@ export function CategoryDistributionPieChart() {
                 dataKey="numTask"
                 nameKey="category"
                 labelLine={false}
+                activeIndex={activeIndex}
+                activeShape={({
+                  outerRadius = 0,
+                  ...props
+                }: PieSectorDataItem) => (
+                  <g>
+                    <Sector {...props} outerRadius={outerRadius + 5} />
+                    <Sector
+                      {...props}
+                      outerRadius={outerRadius + 12}
+                      innerRadius={outerRadius + 6}
+                    />
+                  </g>
+                )}
                 label={({ payload, ...props }) => {
                   return (
                     <text
