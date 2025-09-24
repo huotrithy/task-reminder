@@ -29,7 +29,7 @@ export default function AppClient() {
     <>
       <PageHeader title="Home" desc="Keep track of your tasks" />
       <MainContentWrapper>
-        <div className="flex flex-col justify-start gap-4 bg-white min-h-[72px] py-2 ">
+        <div className="flex flex-col justify-start gap-4 bg-white py-2 ">
           {data?.categories &&
             data.categories.map((category, index) => (
               <CategoryListItem category={category} key={index} />

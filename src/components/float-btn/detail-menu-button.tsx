@@ -19,7 +19,7 @@ export default function DetailButtonMenu(props: Props) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="absolute bottom-20 md:bottom-4 right-4 z-50">
+    <div className="fixed bottom-20 md:bottom-4 right-4 z-50">
       <div className="flex flex-col items-end gap-4">
         {open && (
           <>

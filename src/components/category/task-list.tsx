@@ -1,11 +1,21 @@
-import { Task } from "@prisma/client";
 import Link from "next/link";
 import { Badge } from "../ui/badge";
 import { formatDateToString } from "../utils";
 import { ClipboardList } from "lucide-react";
 
+type TaskProps = {
+  id: string;
+  taskName: string;
+  isToSend?: boolean | null;
+  deadline?: Date | null;
+  desc?: string | null;
+
+  Category?: {
+    categoryName: string;
+  } | null;
+};
 interface Props {
-  tasks?: Task[];
+  tasks?: TaskProps[];
 }
 
 export function TaskList({ tasks }: Props) {
@@ -36,16 +46,19 @@ export function TaskList({ tasks }: Props) {
                   <span className="font-semibold text-gray-800 group-hover:text-primary">
                     {task.taskName}
                   </span>
-                  <Badge
-                    variant="secondary"
-                    className={`py-1 px-2 text-xs font-medium rounded-full transition-colors ${
-                      task.isToSend
-                        ? "bg-primary text-white"
-                        : "bg-muted text-gray-500"
-                    }`}
-                  >
-                    {task.isToSend ? "Notification On" : "Notification Off"}
-                  </Badge>
+
+                  {task.isToSend && (
+                    <Badge
+                      variant="secondary"
+                      className={`py-1 px-2 text-xs font-medium rounded-full transition-colors ${
+                        task.isToSend
+                          ? "bg-primary text-white"
+                          : "bg-muted text-gray-500"
+                      }`}
+                    >
+                      {task.isToSend ? "Notification On" : "Notification Off"}
+                    </Badge>
+                  )}
                 </div>
 
                 {task.deadline && (
