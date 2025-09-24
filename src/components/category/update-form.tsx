@@ -28,7 +28,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 
 type Props = {
   initialData: Category;
@@ -38,12 +38,17 @@ type Props = {
 };
 
 export function UpdateCategoryForm(props: Props) {
-  const form = useForm<UpdateCategoryInputs>({
-    resolver: zodResolver(updateCategorySchema),
-    defaultValues: {
+  const defaultValues = useMemo(
+    () => ({
       categoryName: props.initialData.categoryName,
       categoryId: props.initialData.id,
-    },
+    }),
+    [props.initialData]
+  );
+
+  const form = useForm<UpdateCategoryInputs>({
+    resolver: zodResolver(updateCategorySchema),
+    defaultValues: defaultValues,
   });
 
   const mutation = useMutation({
@@ -69,6 +74,12 @@ export function UpdateCategoryForm(props: Props) {
   const handleSubmit = (data: UpdateCategoryInputs) => {
     mutation.mutate(data);
   };
+
+  useEffect(() => {
+    if (props.open) {
+      form.reset(defaultValues);
+    }
+  }, [props.open, defaultValues, form]);
 
   return (
     <Dialog open={props.open} onOpenChange={props.setOpen}>

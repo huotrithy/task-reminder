@@ -9,7 +9,7 @@ import {
 } from "../schemas/user-schema";
 import { errorResponse, successResponse } from "../serverUtils";
 import { logger } from "../logger";
-import { ERROR_MESSAGE } from "../user-message";
+import { ERROR_MESSAGE } from "../../shared/user-message";
 
 export async function getUser() {
   try {

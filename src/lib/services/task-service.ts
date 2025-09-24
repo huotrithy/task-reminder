@@ -12,7 +12,7 @@ import {
 } from "../schemas/task-schemas";
 import { errorResponse, successResponse } from "../serverUtils";
 import { logger } from "../logger";
-import { ERROR_MESSAGE, SUCCESS_MESSAGE } from "../user-message";
+import { ERROR_MESSAGE, SUCCESS_MESSAGE } from "../../shared/user-message";
 
 export async function getTasks() {
   try {

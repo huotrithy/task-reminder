@@ -11,7 +11,7 @@ import {
 } from "../schemas/auth-schemas";
 import { errorResponse, successResponse } from "../serverUtils";
 import { logger } from "../logger";
-import { ERROR_MESSAGE } from "../user-message";
+import { ERROR_MESSAGE } from "../../shared/user-message";
 
 export async function login({ email, password }: LoginInputs) {
   try {

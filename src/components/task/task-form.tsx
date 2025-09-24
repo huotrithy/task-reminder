@@ -13,6 +13,7 @@ import { Checkbox } from "../ui/checkbox";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -44,7 +45,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 
 interface TaskFormProps {
   task?: Task;
@@ -67,27 +68,40 @@ export function TaskForm(props: TaskFormProps) {
     },
   });
 
-  const form = useForm<UpsertTaskInputs>({
-    resolver: zodResolver(upsertTaskSchema),
-    defaultValues: props.task
+  const defaultValues = useMemo(() => {
+    return props.task
       ? {
           taskName: props.task.taskName,
           desc: props.task.desc,
           deadline: props.task.deadline,
           isToSend: props.task.isToSend,
           categoryId: props.task.categoryId,
+          reminderPeriodDay: props.task.reminderPeriodDay,
+          reminderDeadline: props.task.reminderDeadline,
         }
       : {
           taskName: "",
           desc: "",
-          deadline: new Date(),
+          deadline: null,
           isToSend: true,
           categoryId: "",
-        },
+          reminderPeriodDay: 30,
+          reminderDeadline: new Date(),
+        };
+  }, [props.task]);
+
+  const form = useForm<UpsertTaskInputs>({
+    resolver: zodResolver(upsertTaskSchema),
+    defaultValues: defaultValues,
   });
 
   const mutation = useMutation({
     mutationFn: async (formInput: UpsertTaskInputs) => {
+      if (formInput.isToSend === false) {
+        formInput.reminderPeriodDay = null;
+        formInput.reminderDeadline = null;
+      }
+
       let response;
       if (props.task) {
         response = await updateTask(formInput, props.task.id);
@@ -116,11 +130,23 @@ export function TaskForm(props: TaskFormProps) {
     mutation.mutate(data);
   };
 
+  const isToSend = form.watch("isToSend");
+
+  useEffect(() => {
+    if (props.open) {
+      form.reset(defaultValues);
+    }
+  }, [props.open, defaultValues, form]);
+
   return (
     <Dialog open={props.open} onOpenChange={props.setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add new Task</DialogTitle>
+          <DialogTitle>
+            {props.task
+              ? `Update Task - ${props.task.taskName}`
+              : "Add new Task"}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -134,7 +160,11 @@ export function TaskForm(props: TaskFormProps) {
                 <FormItem>
                   <FormLabel>Task Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter Task name" {...field} />
+                    <Input
+                      placeholder="Enter Task name"
+                      className="text-sm"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -151,12 +181,12 @@ export function TaskForm(props: TaskFormProps) {
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <FormControl className="w-full">
+                    <FormControl className="w-full text-sm">
                       <SelectTrigger>
                         <SelectValue placeholder="Select a category for this task" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="text-sm">
                       {categories &&
                         categories.map((category, index) => {
                           return (
@@ -180,7 +210,8 @@ export function TaskForm(props: TaskFormProps) {
                   <FormLabel>Task Description</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Enter Task description"
+                      className="text-sm"
+                      placeholder="Enter Task description (Optional)"
                       {...field}
                       value={field.value ?? ""}
                     />
@@ -209,7 +240,7 @@ export function TaskForm(props: TaskFormProps) {
                           {field.value ? (
                             format(field.value, "PPP")
                           ) : (
-                            <span>Pick a date</span>
+                            <span>Pick your deadline</span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
@@ -218,7 +249,7 @@ export function TaskForm(props: TaskFormProps) {
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
-                        selected={field.value}
+                        selected={field.value ?? undefined}
                         onSelect={field.onChange}
                         captionLayout="dropdown"
                         startMonth={new Date(2000, 0)}
@@ -248,6 +279,81 @@ export function TaskForm(props: TaskFormProps) {
                 </FormItem>
               )}
             />
+            {isToSend && (
+              <>
+                <FormField
+                  name="reminderDeadline"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Reminder Deadline</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "md:w-1/2 pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick your reminder deadline</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value ?? undefined}
+                            onSelect={field.onChange}
+                            captionLayout="dropdown"
+                            startMonth={new Date(2000, 0)}
+                            endMonth={new Date(2100, 0)}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormDescription>
+                        Set the date you want to be notified to complete the
+                        task. This is not the final due date.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="reminderPeriodDay"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Reminder Period</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="Reminder period in days"
+                          className="text-sm"
+                          {...field}
+                          value={field.value ?? undefined}
+                          {...form.register("reminderPeriodDay", {
+                            valueAsNumber: true,
+                          })}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Enter the number of days you want to receive a daily
+                        notification before the Reminder Deadline
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
 
             <DialogFooter className="mt-4">
               <DialogClose asChild>
@@ -258,8 +364,8 @@ export function TaskForm(props: TaskFormProps) {
                 {mutation.isPending
                   ? "Submitting..."
                   : props.task
-                  ? "Update Task"
-                  : "Create Task"}
+                  ? "Update"
+                  : "Create"}
               </Button>
             </DialogFooter>
           </form>

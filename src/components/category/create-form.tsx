@@ -28,7 +28,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 type Props = {
   open: boolean;
@@ -66,6 +66,10 @@ export function CreateCategoryForm(props: Props) {
   const handleSubmit = (data: CreateCategoryInputs) => {
     mutation.mutate(data);
   };
+
+  useEffect(() => {
+    form.reset();
+  }, [props.open, form]);
 
   return (
     <Dialog open={props.open} onOpenChange={props.setOpen}>

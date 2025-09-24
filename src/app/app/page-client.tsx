@@ -35,6 +35,11 @@ export default function AppClient() {
             data.categories.map((category, index) => (
               <CategoryListItem category={category} key={index} />
             ))}
+
+          <AddButtonMenu
+            setOpenCreateCategoryForm={setOpenCreateCategoryForm}
+            setOpenCreateTaskForm={setOpenCreateTaskForm}
+          />
         </div>
       </MainContentWrapper>
 
@@ -44,11 +49,10 @@ export default function AppClient() {
         refect={refetch}
       />
 
-      <TaskForm open={openCreateTaskForm} setOpen={setOpenCreateTaskForm} />
-
-      <AddButtonMenu
-        setOpenCreateCategoryForm={setOpenCreateCategoryForm}
-        setOpenCreateTaskForm={setOpenCreateTaskForm}
+      <TaskForm
+        open={openCreateTaskForm}
+        setOpen={setOpenCreateTaskForm}
+        refetch={refetch}
       />
     </>
   );

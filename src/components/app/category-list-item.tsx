@@ -22,17 +22,19 @@ export function CategoryListItem({ category }: Prop) {
     <Collapsible
       open={openList}
       onOpenChange={setOpenList}
-      className="rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:shadow-md"
+      className="rounded-2xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md"
     >
       <CollapsibleTrigger asChild>
-        <div className="flex items-center justify-between gap-4 py-3 px-5 cursor-pointer">
+        <div className="flex items-center justify-between gap-4 py-4 px-5 cursor-pointer">
           <div className="flex flex-col">
             <Link href={`/app/category/${category.id}`} className="flex-grow">
-              <p className="text-base font-semibold leading-6 text-gray-900 line-clamp-1">
+              <p className="text-base font-semibold leading-6 text-gray-900 group-hover:text-primary line-clamp-1">
                 {category.categoryName}
               </p>
               <p className="text-sm text-gray-500 line-clamp-2 mt-1">
-                {category.task.length} tasks under this category
+                {category.task.length}{" "}
+                {category.task.length === 1 ? "task" : "tasks"} under this
+                category
               </p>
             </Link>
           </div>
@@ -55,34 +57,37 @@ export function CategoryListItem({ category }: Prop) {
                 href={`/app/task/${task.id}`}
                 className="block group"
               >
-                <li className="rounded-xl border border-gray-100 bg-gray-50 p-3 transition-colors hover:bg-gray-100">
+                <li className="rounded-xl border border-gray-200 bg-gray-50 p-3 transition-all hover:bg-gray-100 hover:shadow-sm">
                   <div className="flex justify-between items-center">
-                    <span className="font-medium text-gray-800">
+                    <span className="font-medium text-gray-800 group-hover:text-primary">
                       {task.taskName}
                     </span>
                     <Badge
                       variant="secondary"
                       className={cn(
-                        "py-0.5 text-xs font-medium transition",
+                        "py-1 px-2 text-xs font-medium rounded-full transition-colors",
                         task.isToSend
-                          ? "bg-blue-50 text-blue-700"
-                          : "bg-gray-100 text-gray-500"
+                          ? "bg-primary text-white"
+                          : "bg-muted text-gray-500"
                       )}
                     >
                       {task.isToSend ? "Notification On" : "Notification Off"}
                     </Badge>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Deadline: {formatDateToString(task.deadline)}
-                  </p>
+                  {task.deadline && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      <span className="font-medium">Deadline:</span>{" "}
+                      {formatDateToString(task.deadline)}
+                    </p>
+                  )}
                 </li>
               </Link>
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-gray-400 italic pt-3">
-            No tasks in this category yet.
-          </p>
+          <div className="pt-3 text-center text-gray-400">
+            <p className="text-sm italic">No tasks in this category yet.</p>
+          </div>
         )}
       </CollapsibleContent>
     </Collapsible>

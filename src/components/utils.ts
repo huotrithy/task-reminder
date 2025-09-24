@@ -1,4 +1,4 @@
-export function formatDateToString(date?: Date) {
+export function formatDateToString(date?: Date | null) {
   if (!date) {
     return "";
   }

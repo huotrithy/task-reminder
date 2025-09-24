@@ -39,12 +39,12 @@ model Task {
     id         String    @id @default(cuid())
     taskName   String    @map(name: "task_name")
     desc       String?
-    deadline   DateTime
+    deadline   DateTime?
     isDelete   Boolean   @map(name: "is_delete")
     isToSend   Boolean   @map(name: "is_to_send")
     
-    taskToCompletedBy DateTime 
-    within_days_to_send Int     @default(30)
+    reminderDeadline DateTime?
+    reminderPeriodDay Int?
 
     createdAt  DateTime  @default(now()) @map(name: "created_at")
     updatedAt  DateTime  @updatedAt @map(name: "updated_at")

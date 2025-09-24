@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 import DetailButtonMenu from "@/components/float-btn/detail-menu-button";
 import { deleteTask } from "@/lib/services/task-service";
@@ -8,6 +9,7 @@ import { formatDateToString } from "@/components/utils";
 import {
   BellRing,
   CalendarDays,
+  ClockFading,
   Grid2x2Plus,
   LayoutList,
   Pencil,
@@ -16,99 +18,124 @@ import {
 import { fetchTask } from "./data";
 import PageHeader from "@/components/page-header/page-header";
 import MainContentWrapper from "@/components/main-content-wrapper";
-import { useState } from "react";
 import { TaskForm } from "@/components/task/task-form";
+
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <h5 className="scroll-m-20 mt-6 mb-2 text-base md:text-lg font-semibold tracking-tight text-primary">
+      {children}
+    </h5>
+  );
+}
+
+function InfoRow({
+  icon: Icon,
+  children,
+}: {
+  icon: React.ElementType;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-center gap-3 rounded-md p-2 hover:bg-gray-50 transition">
+      <Icon className="h-5 w-5 text-gray-500" />
+      <p className="leading-7 text-sm md:text-base text-gray-700">{children}</p>
+    </div>
+  );
+}
 
 export default function PageClient({ taskId }: { taskId: string }) {
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ["task"],
+    queryKey: ["task", taskId],
     queryFn: () => fetchTask(taskId),
   });
 
   const [openUpdateForm, setOpenUpdateForm] = useState(false);
 
-  if (isLoading) return <div>Loading task...</div>;
-  if (isError || !data) return <div>Error: {error?.message}</div>;
+  if (isLoading) return <div className="p-4">Loading task…</div>;
+  if (isError || !data)
+    return <div className="p-4 text-red-500">Error: {error?.message}</div>;
+
+  const task = data.task;
 
   return (
     <div>
-      <PageHeader title="Task Detail" backLink="/app" />
+      <PageHeader
+        title={`Task - ${task.taskName}`}
+        desc="View your task details"
+        backLink={`/app/category/${task.categoryId}`}
+      />
+
       <MainContentWrapper>
-        <h4 className="scroll-m-20 my-2 text-xl font-semibold tracking-tight">
-          {data?.task.taskName}
-        </h4>
-        <p className="leading-7 md:text-base text-sm">{data?.task.desc}</p>
-        <h5 className="scroll-m-20 my-2 md:text-lg text-base font-medium tracking-tight">
-          Deadline
-        </h5>
-        <div className="flex gap-3 items-center">
-          <CalendarDays className="h-5 w-5" />
-          <p className="leading-7 md:text-base text-sm">
-            {formatDateToString(data?.task.deadline)}
-          </p>
-        </div>
+        <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
+          {task.desc && (
+            <p className="leading-7 md:text-base text-sm text-gray-800">
+              {task.desc}
+            </p>
+          )}
 
-        <h5 className="scroll-m-20 my-2 md:text-lg text-base font-medium tracking-tight">
-          Notifications
-        </h5>
-        <div className="flex gap-3 items-center">
-          <Send className="h-5 w-5" />
-          <p className="leading-7 md:text-base text-sm">
-            Notification {data?.task.isToSend ? "On" : "Off"}
-          </p>
-        </div>
+          {task.deadline && (
+            <>
+              <SectionHeading>Deadline</SectionHeading>
+              <InfoRow icon={CalendarDays}>
+                {formatDateToString(task.deadline)}
+              </InfoRow>
+            </>
+          )}
 
-        <h5 className="scroll-m-20 my-2 md:text-lg text-base font-medium tracking-tight">
-          Category
-        </h5>
-        <div className="flex gap-3 items-center">
-          <Grid2x2Plus className="h-5 w-5" />
-          <p className="leading-7 md:text-base text-sm">
-            {data?.task.Category?.categoryName}
-          </p>
-        </div>
+          <SectionHeading>Notifications</SectionHeading>
+          <InfoRow icon={Send}>
+            Notification {task.isToSend ? "On" : "Off"}
+          </InfoRow>
 
-        <h5 className="scroll-m-20 my-2 md:text-lg text-base font-medium tracking-tight">
-          Others
-        </h5>
-        <div className="flex gap-3 items-center">
-          <LayoutList className="h-5 w-5" />
-          <p className="leading-7 md:text-base text-sm">
-            Created Date - {formatDateToString(data?.task.createdAt)}
-          </p>
-        </div>
-        <div className="flex gap-3 items-center">
-          <Pencil className="h-5 w-5" />
-          <p className="leading-7 md:text-base text-sm">
-            Last Update Date - {formatDateToString(data?.task.updatedAt)}
-          </p>
-        </div>
+          {task.isToSend && (
+            <>
+              <InfoRow icon={CalendarDays}>
+                Reminder Deadline - {formatDateToString(task.reminderDeadline)}
+              </InfoRow>
+              <InfoRow icon={ClockFading}>
+                Reminder Period -{" "}
+                {`${task.reminderPeriodDay} ${
+                  task.reminderPeriodDay && task.reminderPeriodDay > 1
+                    ? "days"
+                    : "day"
+                }`}
+              </InfoRow>
+            </>
+          )}
 
-        <h5 className="scroll-m-20 my-2 md:text-lg text-base font-medium tracking-tight">
-          Notifications History
-        </h5>
-        {data?.task.NotificationHistory &&
-          data?.task.NotificationHistory.map((history, index) => {
-            return (
-              <div key={index} className="flex gap-3 items-center">
-                <BellRing className="h-5 w-5" />
-                <p className="leading-7 md:text-base text-sm">
+          <SectionHeading>Category</SectionHeading>
+          <InfoRow icon={Grid2x2Plus}>{task.Category?.categoryName}</InfoRow>
+
+          <SectionHeading>Others</SectionHeading>
+          <InfoRow icon={LayoutList}>
+            Created Date - {formatDateToString(task.createdAt)}
+          </InfoRow>
+          <InfoRow icon={Pencil}>
+            Last Update Date - {formatDateToString(task.updatedAt)}
+          </InfoRow>
+
+          {task.NotificationHistory && task.NotificationHistory.length > 0 && (
+            <>
+              <SectionHeading>Notifications History</SectionHeading>
+              {task.NotificationHistory.map((history, index) => (
+                <InfoRow key={index} icon={BellRing}>
                   {formatDateToString(history?.createdAt)}
-                </p>
-              </div>
-            );
-          })}
+                </InfoRow>
+              ))}
+            </>
+          )}
+        </div>
       </MainContentWrapper>
 
       <DetailButtonMenu
-        deleteTitle={`Delete Task - ${data.task.taskName}`}
-        deleteSuccessRedirectUrl={`/app/category/${data.task.categoryId}`}
-        onDelete={() => deleteTask({ taskId: data.task.id })}
+        deleteTitle={`Delete Task - ${task.taskName}`}
+        deleteSuccessRedirectUrl={`/app/category/${task.categoryId}`}
+        onDelete={() => deleteTask({ taskId: task.id })}
         setUpdateOpen={setOpenUpdateForm}
       />
 
       <TaskForm
-        task={data.task}
+        task={task}
         open={openUpdateForm}
         setOpen={setOpenUpdateForm}
         refetch={refetch}
