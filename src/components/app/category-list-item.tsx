@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/client-utils";
 import { Category, Task } from "@prisma/client";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";

@@ -12,7 +12,7 @@ import {
   UpdateCategoryInputs,
   updateCategorySchema,
 } from "../schemas/category-schema";
-import { errorResponse, successResponse } from "../serverUtils";
+import { errorResponse, successResponse } from "../server-utils";
 import { logger } from "../logger";
 import { ERROR_MESSAGE, SUCCESS_MESSAGE } from "../../shared/user-message";
 

@@ -9,7 +9,7 @@ import {
   SignupFormInputs,
   signupSchema,
 } from "../schemas/auth-schemas";
-import { errorResponse, successResponse } from "../serverUtils";
+import { errorResponse, successResponse } from "../server-utils";
 import { logger } from "../logger";
 import { ERROR_MESSAGE } from "../../shared/user-message";
 

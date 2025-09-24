@@ -7,7 +7,7 @@ import {
   upsertTelegramChatIDInputs,
   upsertTelegramChatIDSchema,
 } from "../schemas/user-schema";
-import { errorResponse, successResponse } from "../serverUtils";
+import { errorResponse, successResponse } from "../server-utils";
 import { logger } from "../logger";
 import { ERROR_MESSAGE } from "../../shared/user-message";
 
