@@ -5,5 +5,5 @@
 
 */
 -- AlterTable
-ALTER TABLE "task" DROP COLUMN "within_days_to_send",
-ADD COLUMN     "withinDaysToSend" INTEGER NOT NULL DEFAULT 30;
+-- ALTER TABLE "task" DROP COLUMN "within_days_to_send",
+-- ADD COLUMN     "withinDaysToSend" INTEGER NOT NULL DEFAULT 30;

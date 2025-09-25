@@ -6,7 +6,8 @@
 
 */
 -- AlterTable
-ALTER TABLE "task" DROP COLUMN "taskToCompletedBy",
-DROP COLUMN "withinDaysToSend",
-ADD COLUMN     "reminderDeadline" TIMESTAMP(3),
-ADD COLUMN     "reminderPeriodDay" INTEGER;
+-- ALTER TABLE "task" 
+-- DROP COLUMN "taskToCompletedBy",
+-- DROP COLUMN "withinDaysToSend",
+-- ADD COLUMN     "reminderDeadline" TIMESTAMP(3),
+-- ADD COLUMN     "reminderPeriodDay" INTEGER;
