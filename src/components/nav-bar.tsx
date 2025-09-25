@@ -6,105 +6,23 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  navigationMenuTriggerStyle,
 } from "./ui/navigation-menu";
 import { Button } from "./ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "./ui/sheet";
-import { MenuIcon } from "lucide-react";
 import Link from "next/link";
-import React, { useState } from "react";
+import React from "react";
 import { signOut, useSession } from "next-auth/react";
+import { menu } from "@/shared/const";
+import { usePathname } from "next/navigation";
 
 export function NavBar() {
   const session = useSession();
-  const [isOpenMenu, setOpenMenu] = useState(false);
-
-  function handleScroll(e: React.MouseEvent, id: string) {
-    e.preventDefault();
-
-    setTimeout(() => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
-    }, 100);
-  }
-
+  const pathName = usePathname();
   function handleLogout() {
     signOut();
   }
 
-  const menu = {
-    unauthenticate: [
-      {
-        title: "Features",
-        body: (
-          <NavigationMenuItem>
-            <Link
-              href="#feature"
-              onClick={(e) => handleScroll(e, "feature")}
-              className={navigationMenuTriggerStyle()}
-            >
-              Features
-            </Link>
-          </NavigationMenuItem>
-        ),
-        collapsedBody: null,
-      },
-      {
-        title: "About",
-        body: (
-          <NavigationMenuItem>
-            <NavigationMenuLink
-              href="/"
-              className={navigationMenuTriggerStyle()}
-            >
-              About
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        ),
-        collapsedBody: (
-          <div className="flex flex-col gap-6">
-            <Link href="#" className="font-medium">
-              About
-            </Link>
-          </div>
-        ),
-      },
-    ],
-
-    authenticate: [
-      {
-        title: "Setting",
-        body: (
-          <NavigationMenuItem>
-            <NavigationMenuLink
-              href="/app/setting"
-              // className={navigationMenuTriggerStyle()}
-            >
-              Setting
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        ),
-        collapsedBody: (
-          <div className="flex flex-col gap-6">
-            <Link href="/app/setting" className="font-medium">
-              Setting
-            </Link>
-          </div>
-        ),
-      },
-    ],
-  };
-
   return (
-    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f5] px-5 py-3">
+    <header className="hidden md:flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f5] px-5 py-3">
       <div className="container max-w-7xl mx-auto">
         <nav className="flex items-center justify-between">
           <div className="flex gap-12 items-center">
@@ -123,24 +41,25 @@ export function NavBar() {
                 Task Reminder
               </span>
             </Link>
-            <NavigationMenu className="hidden lg:block">
+            <NavigationMenu className="hidden md:block">
               <NavigationMenuList>
-                {session.status === "authenticated"
-                  ? menu.authenticate.map((item, index) => (
-                      <React.Fragment key={index}>
-                        {item.collapsedBody}
-                      </React.Fragment>
-                    ))
-                  : menu.unauthenticate.map((item, index) => (
-                      <React.Fragment key={index}>
-                        {item.collapsedBody}
-                      </React.Fragment>
-                    ))}
+                {session.status === "authenticated" &&
+                  menu.authenticate.map((item, index) => (
+                    <NavigationMenuItem key={index}>
+                      <NavigationMenuLink
+                        asChild
+                        className="data-[active=true]:bg-primary/20"
+                        data-active={pathName === item.href}
+                      >
+                        <Link href={item.href}>{item.title}</Link>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  ))}
               </NavigationMenuList>
             </NavigationMenu>
           </div>
 
-          <div className="hidden items-center gap-4 lg:flex">
+          <div className="hidden items-center gap-4 md:flex">
             {session.status === "authenticated" ? (
               <Button variant="outline" onClick={handleLogout}>
                 Logout
@@ -156,63 +75,6 @@ export function NavBar() {
               </>
             )}
           </div>
-
-          <Sheet open={isOpenMenu} onOpenChange={setOpenMenu}>
-            <SheetTrigger asChild className="lg:hidden">
-              <Button variant="outline" size="icon">
-                <MenuIcon className="h-4 w-4" />
-              </Button>
-            </SheetTrigger>
-
-            <SheetContent side="top" className="max-h-screen overflow-auto">
-              <SheetHeader>
-                <SheetTitle>
-                  <Link
-                    href={session.status === "authenticated" ? "/app" : "/"}
-                    className="flex items-center gap-2"
-                  >
-                    <Image
-                      src="/task.svg"
-                      width={30}
-                      height={10}
-                      className="max-h-8"
-                      alt="Shadcn UI Navbar"
-                    />
-                    <span className="text-lg font-semibold tracking-tighter">
-                      Task Reminder
-                    </span>
-                  </Link>
-                </SheetTitle>
-              </SheetHeader>
-              <div className="flex flex-col px-4 py-0 pb-3">
-                <div className="flex flex-col gap-6">
-                  {session.status === "authenticated"
-                    ? menu.authenticate.map((item, index) => (
-                        <React.Fragment key={index}>
-                          {item.collapsedBody}
-                        </React.Fragment>
-                      ))
-                    : menu.unauthenticate.map((item, index) => (
-                        <React.Fragment key={index}>
-                          {item.collapsedBody}
-                        </React.Fragment>
-                      ))}
-                </div>
-                {session.status === "authenticated" ? (
-                  <div className="mt-6 flex flex-col gap-6">
-                    <Button variant="outline" onClick={handleLogout}>
-                      Logout
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="mt-6 flex flex-col gap-4">
-                    <Button variant="outline">Sign in</Button>
-                    <Button>Start for free</Button>
-                  </div>
-                )}
-              </div>
-            </SheetContent>
-          </Sheet>
         </nav>
       </div>
     </header>

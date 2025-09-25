@@ -12,12 +12,15 @@ import {
   UpdateCategoryInputs,
   updateCategorySchema,
 } from "../schemas/category-schema";
-import { errorResponse, successResponse } from "../utils";
+import { errorResponse, successResponse } from "../server-utils";
+import { logger } from "../logger";
+import { ERROR_MESSAGE, SUCCESS_MESSAGE } from "../../shared/user-message";
 
 export async function createCategory(formInput: CreateCategoryInputs) {
   try {
     const session = await getServerAuthSession();
     if (!session) {
+      logger.error(ERROR_MESSAGE.UNAUTHENTICATED);
       return redirect("/login");
     }
     const userId = session.user.id;
@@ -25,7 +28,8 @@ export async function createCategory(formInput: CreateCategoryInputs) {
     const validation = createCategorySchema.safeParse(formInput);
     if (!validation.success) {
       const fieldErrors = validation.error.message;
-      return errorResponse({}, fieldErrors);
+      logger.error(fieldErrors);
+      return errorResponse(fieldErrors);
     }
 
     const createdCategory = await categoryRepository.createCategory(
@@ -35,8 +39,8 @@ export async function createCategory(formInput: CreateCategoryInputs) {
 
     return successResponse({ category: createdCategory });
   } catch (error: unknown) {
-    console.log(error);
-    return errorResponse({}, "Something went wrong.");
+    logger.error(error);
+    return errorResponse(ERROR_MESSAGE.SERVER_ERROR);
   }
 }
 
@@ -44,13 +48,15 @@ export async function updateCategory(formInput: UpdateCategoryInputs) {
   try {
     const session = await getServerAuthSession();
     if (!session) {
+      logger.error(ERROR_MESSAGE.UNAUTHENTICATED);
       return redirect("/login");
     }
 
     const validation = updateCategorySchema.safeParse(formInput);
     if (!validation.success) {
       const fieldErrors = validation.error.message;
-      return errorResponse({}, fieldErrors);
+      logger.error(fieldErrors);
+      return errorResponse(fieldErrors);
     }
 
     const updatedCategory = await categoryRepository.updateCategory(
@@ -58,8 +64,8 @@ export async function updateCategory(formInput: UpdateCategoryInputs) {
     );
     return successResponse({ category: updatedCategory });
   } catch (error: unknown) {
-    console.log(error);
-    return errorResponse({}, "Something went wrong.");
+    logger.error(error);
+    return errorResponse(ERROR_MESSAGE.SERVER_ERROR);
   }
 }
 
@@ -69,6 +75,7 @@ export async function getCategories(
   try {
     const session = await getServerAuthSession();
     if (!session) {
+      logger.error(ERROR_MESSAGE.UNAUTHENTICATED);
       return redirect("/login");
     }
     const userId = session.user.id;
@@ -79,8 +86,8 @@ export async function getCategories(
     );
     return successResponse({ categories: categories });
   } catch (error) {
-    console.log(error);
-    return errorResponse({}, "Something went wrong.");
+    logger.error(error);
+    return errorResponse(ERROR_MESSAGE.SERVER_ERROR);
   }
 }
 
@@ -91,6 +98,7 @@ export async function getCategory(
   try {
     const session = await getServerAuthSession();
     if (!session) {
+      logger.error(ERROR_MESSAGE.UNAUTHENTICATED);
       return redirect("/login");
     }
     const userId = session.user.id;
@@ -101,20 +109,24 @@ export async function getCategory(
       categoryIncludeOptions
     );
     if (!category) {
-      return errorResponse({}, "Category not found.");
+      logger.error(ERROR_MESSAGE.CATEGORY_NOT_FOUND);
+      return errorResponse(ERROR_MESSAGE.CATEGORY_NOT_FOUND);
     }
 
     return successResponse({ category: category });
   } catch (error) {
-    console.log(error);
-    return errorResponse({}, "Something went wrong.");
+    logger.error(error);
+    return errorResponse(ERROR_MESSAGE.SERVER_ERROR);
   }
 }
 
 export async function deleteCategory(formInput: DeleteCategoryInputs) {
   try {
+    logger.info(formInput);
+
     const session = await getServerAuthSession();
     if (!session) {
+      logger.error(ERROR_MESSAGE.UNAUTHENTICATED);
       return redirect("/login");
     }
     const userId = session.user.id;
@@ -122,7 +134,8 @@ export async function deleteCategory(formInput: DeleteCategoryInputs) {
     const validation = deleteCategorySchema.safeParse(formInput);
     if (!validation.success) {
       const fieldErrors = validation.error.message;
-      return errorResponse({}, fieldErrors);
+      logger.error(fieldErrors);
+      return errorResponse(fieldErrors);
     }
 
     const categoryTask = await categoryRepository.getCategory(
@@ -131,11 +144,9 @@ export async function deleteCategory(formInput: DeleteCategoryInputs) {
       { includeTask: true }
     );
 
-    if (categoryTask) {
-      return errorResponse(
-        {},
-        "You cannot delete this Cateogory, There are task under it."
-      );
+    if (categoryTask?.task && categoryTask?.task.length > 0) {
+      logger.warn(ERROR_MESSAGE.DELETE_ACTIVE_CATEGORY);
+      return errorResponse(ERROR_MESSAGE.DELETE_ACTIVE_CATEGORY);
     }
 
     const deletedCategory = await categoryRepository.deleteCategory(
@@ -145,10 +156,10 @@ export async function deleteCategory(formInput: DeleteCategoryInputs) {
 
     return successResponse(
       { category: deletedCategory },
-      "Category deleted successfully!"
+      SUCCESS_MESSAGE.DELETE_CATEGORY
     );
   } catch (error) {
-    console.log(error);
-    return errorResponse({}, "Something went wrong.");
+    logger.error(error);
+    return errorResponse(ERROR_MESSAGE.SERVER_ERROR);
   }
 }

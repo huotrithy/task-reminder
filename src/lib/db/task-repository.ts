@@ -62,6 +62,8 @@ async function createTask(taskData: UpsertTaskInputs) {
       isToSend: taskData.isToSend,
       isDelete: false,
       categoryId: taskData.categoryId,
+      reminderDeadline: taskData.reminderDeadline,
+      reminderPeriodDay: taskData.reminderPeriodDay,
     },
   });
   return createdTask;
@@ -85,6 +87,8 @@ async function updateTask(
       deadline: taskData.deadline,
       isToSend: taskData.isToSend,
       categoryId: taskData.categoryId,
+      reminderDeadline: taskData.reminderDeadline,
+      reminderPeriodDay: taskData.reminderPeriodDay,
     },
   });
 

@@ -26,6 +26,7 @@ export const metadata: Metadata = {
     default: APP_DEFAULT_TITLE,
     template: APP_TITLE_TEMPLATE,
   },
+
   description: APP_DESCRIPTION,
   appleWebApp: {
     capable: true,
@@ -70,7 +71,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased scroll-smooth`}
       >
         <AppProvider>{children}</AppProvider>
-        <Toaster richColors position="top-right" />
+        <Toaster richColors position="top-right" closeButton />
       </body>
     </html>
   );

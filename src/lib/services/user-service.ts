@@ -7,25 +7,29 @@ import {
   upsertTelegramChatIDInputs,
   upsertTelegramChatIDSchema,
 } from "../schemas/user-schema";
-import { errorResponse, successResponse } from "../utils";
+import { errorResponse, successResponse } from "../server-utils";
+import { logger } from "../logger";
+import { ERROR_MESSAGE } from "../../shared/user-message";
 
 export async function getUser() {
   try {
     const session = await getServerAuthSession();
     if (!session) {
+      logger.error(ERROR_MESSAGE.UNAUTHENTICATED);
       return redirect("/login");
     }
 
     const userId = session.user.id;
     const user = await userRepository.getUserByID(userId);
     if (!user) {
-      return errorResponse({}, "User not found.");
+      logger.error(ERROR_MESSAGE.USER_NOT_FOUND);
+      return errorResponse(ERROR_MESSAGE.USER_NOT_FOUND);
     }
 
     return successResponse({ user: user });
   } catch (error) {
-    console.log(error);
-    return errorResponse({}, "Something went wrong.");
+    logger.error(error);
+    return errorResponse(ERROR_MESSAGE.SERVER_ERROR);
   }
 }
 
@@ -35,13 +39,15 @@ export async function upSertTelegramChatID(
   try {
     const session = await getServerAuthSession();
     if (!session) {
+      logger.error(ERROR_MESSAGE.UNAUTHENTICATED);
       return redirect("/login");
     }
 
     const validation = upsertTelegramChatIDSchema.safeParse(formInput);
     if (!validation.success) {
       const fieldErrors = validation.error.message;
-      return errorResponse({}, fieldErrors);
+      logger.error(fieldErrors);
+      return errorResponse(fieldErrors);
     }
 
     const userId = session.user.id;
@@ -52,7 +58,7 @@ export async function upSertTelegramChatID(
 
     return successResponse({ user: updatedUser });
   } catch (error: unknown) {
-    console.log(error);
-    return errorResponse({}, "Something went wrong.");
+    logger.error(error);
+    return errorResponse(ERROR_MESSAGE.SERVER_ERROR);
   }
 }

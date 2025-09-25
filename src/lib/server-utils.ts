@@ -1,10 +1,15 @@
-import { clsx, type ClassValue } from "clsx";
+export interface SuccessResponse<T> {
+  success: true;
+  timestamp: number;
+  message: string;
+  data: T;
+}
 
-import { twMerge } from "tailwind-merge";
-import { ErrorResponse, SuccessResponse } from "./types/type";
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+export interface ErrorResponse<T> {
+  success: false;
+  timestamp: number;
+  message: string;
+  error: T;
 }
 
 export function successResponse<T>(
@@ -20,8 +25,8 @@ export function successResponse<T>(
 }
 
 export function errorResponse<T>(
-  error: T = {} as T,
-  message = "fail"
+  message = "fail",
+  error: T = {} as T
 ): ErrorResponse<T> {
   return {
     success: false,

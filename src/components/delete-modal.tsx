@@ -12,13 +12,13 @@ import {
 } from "./ui/dialog";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ErrorResponse, SuccessResponse } from "@/lib/types/type";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ServerResponse } from "@/shared/types/type";
 
 interface Props {
   title: string;
-  onDelete: () => Promise<SuccessResponse<unknown> | ErrorResponse<unknown>>;
+  onDelete: () => Promise<ServerResponse<object>>;
   successRedirectUrl?: string;
 }
 
@@ -54,17 +54,18 @@ export function DeleteModal({ onDelete, title, successRedirectUrl }: Props) {
           </Button>
         </DialogTrigger>
 
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
+            <DialogDescription>Are you sure?</DialogDescription>
           </DialogHeader>
-          <DialogDescription>Are you sure?</DialogDescription>
-          <DialogFooter>
+          <DialogFooter className="mt-4">
             <DialogClose asChild>
               <Button variant="outline" size="sm">
                 Cancel
               </Button>
             </DialogClose>
+
             <Button
               type="button"
               size="sm"

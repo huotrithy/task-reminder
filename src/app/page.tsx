@@ -1,11 +1,15 @@
 import { FeatureCard } from "@/components/home/feature-card";
+import { MobileLandingPageNav } from "@/components/mobile-landing-page-nav";
 import { NavBar } from "@/components/nav-bar";
 import { Bell, BookCheck, CalendarCheck } from "lucide-react";
 
 export default function Home() {
+  const year = new Date().getFullYear();
+
   return (
     <div className="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden">
       <div className="layout-container flex h-full grow flex-col">
+        <MobileLandingPageNav />
         <NavBar />
         <div className="container max-w-6xl mx-auto flex flex-1 justify-center py-5">
           <div className="layout-content-container flex flex-col flex-1">
@@ -58,8 +62,8 @@ export default function Home() {
           </div>
         </div>
         <footer className="flex justify-center p-6 mt-8">
-          <p className="text-[#60758a] text-base font-normal leading-normal">
-            © 202t Task Reminder. All rights reserved.
+          <p className="text-[#60758a] font-normal leading-normal text-xs">
+            © {year} Task Reminder. All rights reserved.
           </p>
         </footer>
       </div>

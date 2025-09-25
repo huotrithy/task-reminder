@@ -10,12 +10,15 @@ import {
   UpsertTaskInputs,
   upsertTaskSchema,
 } from "../schemas/task-schemas";
-import { errorResponse, successResponse } from "../utils";
+import { errorResponse, successResponse } from "../server-utils";
+import { logger } from "../logger";
+import { ERROR_MESSAGE, SUCCESS_MESSAGE } from "../../shared/user-message";
 
 export async function getTasks() {
   try {
     const session = await getServerAuthSession();
     if (!session) {
+      logger.error(ERROR_MESSAGE.UNAUTHENTICATED);
       return redirect("/login");
     }
     const userId = session.user.id;
@@ -24,8 +27,8 @@ export async function getTasks() {
 
     return successResponse({ tasks: tasks });
   } catch (error) {
-    console.log(error);
-    return errorResponse({}, "Could not retrieve tasks.");
+    logger.error(error);
+    return errorResponse(ERROR_MESSAGE.SERVER_ERROR);
   }
 }
 
@@ -36,18 +39,20 @@ export async function getTask(
   try {
     const session = await getServerAuthSession();
     if (!session) {
+      logger.error(ERROR_MESSAGE.UNAUTHENTICATED);
       return redirect("/login");
     }
     const userId = session.user.id;
 
     const task = await taskRepository.getTask(id, userId, taskIncludeOptions);
     if (!task) {
-      return errorResponse({}, "Task not found.");
+      logger.error(ERROR_MESSAGE.TASK_NOT_FOUND);
+      return errorResponse(ERROR_MESSAGE.TASK_NOT_FOUND);
     }
     return successResponse({ task: task });
   } catch (error) {
-    console.log(error);
-    return errorResponse({}, "Could not retrieve tasks.");
+    logger.error(error);
+    return errorResponse(ERROR_MESSAGE.SERVER_ERROR);
   }
 }
 
@@ -55,20 +60,22 @@ export async function createTask(formInput: UpsertTaskInputs) {
   try {
     const session = await getServerAuthSession();
     if (!session) {
+      logger.error(ERROR_MESSAGE.UNAUTHENTICATED);
       return redirect("/login");
     }
 
     const validation = upsertTaskSchema.safeParse(formInput);
     if (!validation.success) {
       const fieldErrors = validation.error.message;
-      return errorResponse({}, fieldErrors);
+      logger.error(fieldErrors);
+      return errorResponse(fieldErrors);
     }
 
     const createdTask = taskRepository.createTask(validation.data);
     return successResponse({ task: createdTask });
   } catch (error: unknown) {
-    console.log(error);
-    return errorResponse({}, "Could not retrieve tasks.");
+    logger.error(error);
+    return errorResponse(ERROR_MESSAGE.SERVER_ERROR);
   }
 }
 
@@ -76,6 +83,7 @@ export async function updateTask(formInput: UpsertTaskInputs, taskId: string) {
   try {
     const session = await getServerAuthSession();
     if (!session) {
+      logger.error(ERROR_MESSAGE.UNAUTHENTICATED);
       return redirect("/login");
     }
     const userId = session.user.id;
@@ -83,7 +91,8 @@ export async function updateTask(formInput: UpsertTaskInputs, taskId: string) {
     const validation = upsertTaskSchema.safeParse(formInput);
     if (!validation.success) {
       const fieldErrors = validation.error.message;
-      return errorResponse({}, fieldErrors);
+      logger.error(fieldErrors);
+      return errorResponse(fieldErrors);
     }
 
     const updatedTask = await taskRepository.updateTask(
@@ -93,13 +102,14 @@ export async function updateTask(formInput: UpsertTaskInputs, taskId: string) {
     );
 
     if (!updatedTask) {
-      return errorResponse({}, "Task not found.");
+      logger.error(ERROR_MESSAGE.TASK_NOT_FOUND);
+      return errorResponse(ERROR_MESSAGE.TASK_NOT_FOUND);
     }
 
     return successResponse({ task: updatedTask });
   } catch (error: unknown) {
-    console.log(error);
-    return errorResponse({}, "Something went wrong.");
+    logger.error(error);
+    return errorResponse(ERROR_MESSAGE.SERVER_ERROR);
   }
 }
 
@@ -107,6 +117,7 @@ export async function deleteTask(formInput: DeleteTaskInput) {
   try {
     const session = await getServerAuthSession();
     if (!session) {
+      logger.error(ERROR_MESSAGE.UNAUTHENTICATED);
       return redirect("/login");
     }
     const userId = session.user.id;
@@ -114,7 +125,8 @@ export async function deleteTask(formInput: DeleteTaskInput) {
     const validation = deleteTaskSchema.safeParse(formInput);
     if (!validation.success) {
       const fieldErrors = validation.error.message;
-      return errorResponse({}, fieldErrors);
+      logger.error(fieldErrors);
+      return errorResponse(fieldErrors);
     }
 
     const deletedTask = await taskRepository.deleteTask(
@@ -123,12 +135,13 @@ export async function deleteTask(formInput: DeleteTaskInput) {
     );
 
     if (!deletedTask) {
-      return errorResponse({}, "Task not found.");
+      logger.error(ERROR_MESSAGE.TASK_NOT_FOUND);
+      return errorResponse(ERROR_MESSAGE.TASK_NOT_FOUND);
     }
 
-    return successResponse({ task: deletedTask }, "Task deleted successfully!");
+    return successResponse({ task: deletedTask }, SUCCESS_MESSAGE.DELETE_TASK);
   } catch (error) {
-    console.log(error);
-    return errorResponse({}, "Something went wrong.");
+    logger.error(error);
+    return errorResponse(ERROR_MESSAGE.SERVER_ERROR);
   }
 }

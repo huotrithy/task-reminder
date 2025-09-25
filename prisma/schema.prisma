@@ -13,7 +13,7 @@ model User {
     email               String  @unique
     password            String
     telegram_chat_id    String?
-    within_days_to_send Int     @default(30)
+    
 
     createdAt DateTime @default(now()) @map(name: "created_at")
     updatedAt DateTime @updatedAt @map(name: "updated_at")
@@ -39,9 +39,13 @@ model Task {
     id         String    @id @default(cuid())
     taskName   String    @map(name: "task_name")
     desc       String?
-    deadline   DateTime
+    deadline   DateTime?
     isDelete   Boolean   @map(name: "is_delete")
     isToSend   Boolean   @map(name: "is_to_send")
+    
+    reminderDeadline DateTime? @map(name: "reminder_deadline")
+    reminderPeriodDay Int? @map(name: "reminder_period_day")
+
     createdAt  DateTime  @default(now()) @map(name: "created_at")
     updatedAt  DateTime  @updatedAt @map(name: "updated_at")
     Category   Category? @relation(fields: [categoryId], references: [id], onUpdate: Cascade)
