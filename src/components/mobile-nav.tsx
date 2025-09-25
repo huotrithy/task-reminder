@@ -13,7 +13,6 @@ export function MobileNav() {
       <ul className="flex justify-around">
         {menu.authenticate.map((item, index) => {
           const isActive = pathname === item.href;
-
           return (
             <li key={index} className="flex-1">
               <Link href={item.href} className="block py-3">

@@ -29,40 +29,33 @@ import {
 import { Input } from "@/components/ui/input";
 import PageHeader from "@/components/page-header/page-header";
 import MainContentWrapper from "@/components/main-content-wrapper";
+import { signOut, useSession } from "next-auth/react";
 
 export default function Page() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["setting"],
     queryFn: async () => {
       const response = await getUser();
-      if (response.success) {
-        return response.data;
-      }
-
+      if (response.success) return response.data;
       throw new Error(response.message || "An error has occured.");
     },
   });
 
   const router = useRouter();
   const [openTelegramConnect, setOpenTelegramConnect] = useState(false);
+  const session = useSession();
 
   const form = useForm<upsertTelegramChatIDInputs>({
     resolver: zodResolver(upsertTelegramChatIDSchema),
-    defaultValues: data?.user.telegram_chat_id
-      ? {
-          telegram_chat_id: data.user.telegram_chat_id,
-        }
-      : {
-          telegram_chat_id: "",
-        },
+    defaultValues: {
+      telegram_chat_id: data?.user.telegram_chat_id ?? "",
+    },
   });
 
   const mutation = useMutation({
     mutationFn: async (formInput: upsertTelegramChatIDInputs) => {
       const response = await upSertTelegramChatID(formInput);
-      if (response.success) {
-        return response.data;
-      }
+      if (response.success) return response.data;
       throw new Error(response.message);
     },
     onSuccess: () => {
@@ -85,32 +78,39 @@ export default function Page() {
 
   return (
     <>
-      <PageHeader title="Setting" desc="Configure your setting" />
+      <PageHeader title="Settings" desc="Manage your preferences and account" />
 
       <MainContentWrapper>
-        <div>
+        <div className="space-y-6">
+          {/* Telegram Integration */}
           <Collapsible
             open={openTelegramConnect}
             onOpenChange={setOpenTelegramConnect}
-            className="rounded-2xl border border-gray-100 bg-white shadow-sm p-5 transition hover:shadow-md"
+            className="rounded-2xl border border-gray-200 bg-white shadow-sm p-6 transition hover:shadow-md"
           >
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <h5 className="text-base md:text-lg font-semibold text-gray-900 tracking-tight">
+                <h5 className="text-lg font-semibold text-gray-900 tracking-tight">
                   Telegram Integration
                 </h5>
-                <p className="mt-1 text-sm md:text-base text-gray-500">
-                  Connect your Telegram account to get reminders.
+                <p className="mt-1 text-sm text-gray-600">
+                  Connect your Telegram account to receive reminders.
                 </p>
               </div>
 
               <CollapsibleTrigger asChild>
                 {openTelegramConnect ? (
-                  <Button variant="outline" className="text-sm md:text-base">
+                  <Button
+                    variant="outline"
+                    className="text-sm md:text-base min-w-[120px]"
+                  >
                     Cancel
                   </Button>
                 ) : (
-                  <Button asChild className="text-sm md:text-base">
+                  <Button
+                    asChild
+                    className="text-sm md:text-base min-w-[120px]"
+                  >
                     <Link
                       href="https://t.me/reminder_autobot_bot"
                       target="_blank"
@@ -123,11 +123,11 @@ export default function Page() {
               </CollapsibleTrigger>
             </div>
 
-            <CollapsibleContent className="mt-4 rounded-xl border border-gray-100 bg-gray-50 p-4 shadow-inner">
+            <CollapsibleContent className="mt-5 rounded-xl border border-gray-100 bg-gray-50 p-5 shadow-inner">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(handleSubmit)}
-                  className="space-y-6 mt-2 flex flex-col"
+                  className="space-y-5"
                 >
                   <FormField
                     control={form.control}
@@ -148,17 +148,44 @@ export default function Page() {
                       </FormItem>
                     )}
                   />
-                  <Button
-                    type="submit"
-                    disabled={mutation.isPending}
-                    className="self-end mt-0 md:text-base"
-                  >
-                    {mutation.isPending ? "Submitting..." : "Save"}
-                  </Button>
+                  <div className="flex justify-end">
+                    <Button
+                      type="submit"
+                      disabled={mutation.isPending}
+                      className="md:text-base px-6"
+                    >
+                      {mutation.isPending ? "Saving..." : "Save"}
+                    </Button>
+                  </div>
                 </form>
               </Form>
             </CollapsibleContent>
           </Collapsible>
+
+          {/* Account Settings */}
+          <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-6 transition hover:shadow-md">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <div>
+                <h5 className="text-lg font-semibold text-gray-900 tracking-tight">
+                  Account
+                </h5>
+                <p className="mt-1 text-sm text-gray-600">
+                  Manage your account settings.
+                </p>
+              </div>
+              {session.status === "authenticated" && (
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    signOut({ redirect: true, callbackUrl: "/login" })
+                  }
+                  className="text-sm md:text-base min-w-[120px]"
+                >
+                  Logout
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       </MainContentWrapper>
     </>

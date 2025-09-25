@@ -106,12 +106,21 @@ export async function dbGetTaskDeadlineProximity(userId: string) {
       select: selectOption,
     });
 
+    const numNoDeadline = await tx.task.findMany({
+      where: {
+        ...whereOptions,
+        deadline: null,
+      },
+      select: selectOption,
+    });
+
     return {
       numOverdue,
       numDueThisWeek,
       numDueTwoWeek,
       numDueThisMonth,
       moreDueThanAMonth,
+      numNoDeadline,
     };
   });
 

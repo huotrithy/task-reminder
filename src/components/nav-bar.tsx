@@ -17,19 +17,6 @@ import { usePathname } from "next/navigation";
 export function NavBar() {
   const session = useSession();
   const pathName = usePathname();
-  // const [isOpenMenu, setOpenMenu] = useState(false);
-
-  // function handleScroll(e: React.MouseEvent, id: string) {
-  //   e.preventDefault();
-
-  //   setTimeout(() => {
-  //     const element = document.getElementById(id);
-  //     if (element) {
-  //       element.scrollIntoView({ behavior: "smooth" });
-  //     }
-  //   }, 100);
-  // }
-
   function handleLogout() {
     signOut();
   }

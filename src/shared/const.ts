@@ -28,4 +28,5 @@ export const DEADLINE_PROXIMITY_OBJECT = {
   numDueTwoWeek: "Next 2 Weeks",
   numDueThisMonth: "This Month",
   moreDueThanAMonth: "More than a Month",
+  numNoDeadline: "No Deadline",
 };

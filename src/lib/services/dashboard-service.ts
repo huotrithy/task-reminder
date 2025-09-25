@@ -48,8 +48,6 @@ export async function getTaskDeadlineProximity() {
     const userId = session.user.id;
     const result = await dbGetTaskDeadlineProximity(userId);
 
-    // { month: "June", desktop: 214, mobile: 140 }
-
     const categories = new Set<string>();
     Object.values(result).forEach((taskList) => {
       taskList.forEach((task) => {
