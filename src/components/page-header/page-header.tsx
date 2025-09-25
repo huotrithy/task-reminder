@@ -1,4 +1,4 @@
-import { cn } from "@/lib/client-utils";
+import { cn } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";

@@ -10,6 +10,8 @@ import { CreateCategoryForm } from "@/components/category/create-form";
 import AddButtonMenu from "@/components/float-btn/add-menu-button";
 import { useState } from "react";
 import { TaskForm } from "@/components/task/task-form";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { ErrorDisplay } from "@/components/error-display";
 
 export default function AppClient() {
   usePreviousRoute();
@@ -22,37 +24,43 @@ export default function AppClient() {
   const [openCreateCategoryForm, setOpenCreateCategoryForm] = useState(false);
   const [openCreateTaskForm, setOpenCreateTaskForm] = useState(false);
 
-  if (isLoading) return <div>Loading tasks...</div>;
-  if (isError) return <div>Error: {error?.message}</div>;
-
   return (
     <>
       <PageHeader title="Home" desc="Keep track of your tasks" />
       <MainContentWrapper>
-        <div className="flex flex-col justify-start gap-4 bg-white py-2 ">
-          {data?.categories &&
-            data.categories.map((category, index) => (
-              <CategoryListItem category={category} key={index} />
-            ))}
+        {isLoading && <Spinner variant="ellipsis" />}
 
-          <AddButtonMenu
-            setOpenCreateCategoryForm={setOpenCreateCategoryForm}
-            setOpenCreateTaskForm={setOpenCreateTaskForm}
-          />
-        </div>
+        {isError && <ErrorDisplay errorMsg={error.message} />}
+
+        {!isLoading && !isError && data && (
+          <div className="flex flex-col justify-start gap-4 bg-white py-2 ">
+            {data?.categories &&
+              data.categories.map((category, index) => (
+                <CategoryListItem category={category} key={index} />
+              ))}
+
+            <AddButtonMenu
+              setOpenCreateCategoryForm={setOpenCreateCategoryForm}
+              setOpenCreateTaskForm={setOpenCreateTaskForm}
+            />
+          </div>
+        )}
       </MainContentWrapper>
+      {data && (
+        <>
+          <CreateCategoryForm
+            open={openCreateCategoryForm}
+            setOpen={setOpenCreateCategoryForm}
+            refect={refetch}
+          />
 
-      <CreateCategoryForm
-        open={openCreateCategoryForm}
-        setOpen={setOpenCreateCategoryForm}
-        refect={refetch}
-      />
-
-      <TaskForm
-        open={openCreateTaskForm}
-        setOpen={setOpenCreateTaskForm}
-        refetch={refetch}
-      />
+          <TaskForm
+            open={openCreateTaskForm}
+            setOpen={setOpenCreateTaskForm}
+            refetch={refetch}
+          />
+        </>
+      )}
     </>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { RefreshCw } from "lucide-react";
 import { Pie, PieChart, Sector } from "recharts";
 import {
   Card,
@@ -17,8 +16,8 @@ import {
 } from "@/components/ui/chart";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTasksByCategory } from "./data";
-import { generateColorFromString } from "@/lib/client-utils";
-import { Button } from "@/components/ui/button";
+import { generateColorFromString } from "@/lib/utils";
+
 import {
   Select,
   SelectContent,
@@ -28,11 +27,13 @@ import {
 } from "@/components/ui/select";
 import { useMemo, useState } from "react";
 import { PieSectorDataItem } from "recharts/types/polar/Pie";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { ErrorDisplay } from "@/components/error-display";
 
 export const description = "A pie chart with a label list";
 
 export function CategoryDistributionPieChart() {
-  const { data, isLoading, isError, error, refetch } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["numTasksByCategory"],
     queryFn: () => fetchTasksByCategory(),
   });
@@ -122,22 +123,9 @@ export function CategoryDistributionPieChart() {
         </Select>
       </CardHeader>
       <CardContent className="flex-1 pb-4 px-2 flex items-center justify-center">
-        {isLoading && (
-          <div className="text-muted-foreground animate-pulse">
-            Loading chart…
-          </div>
-        )}
+        {isLoading && <Spinner variant="ellipsis" />}
 
-        {isError && (
-          <div className="flex flex-col items-center gap-2">
-            <span className="text-red-500">
-              Failed to load data: {error instanceof Error ? error.message : ""}
-            </span>
-            <Button onClick={() => refetch()} size="sm" className="gap-1">
-              <RefreshCw className="h-4 w-4" /> Retry
-            </Button>
-          </div>
-        )}
+        {isError && <ErrorDisplay errorMsg={error.message} />}
 
         {!isLoading && !isError && chartData.length === 0 && (
           <div className="text-muted-foreground">

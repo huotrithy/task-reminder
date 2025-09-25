@@ -1,6 +1,5 @@
 "use client";
 
-import { RefreshCw } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts";
 
 import {
@@ -20,14 +19,15 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { fetchTaskDeadlineProximity } from "./data";
 import { useMemo, useState } from "react";
-import { generateColorFromString } from "@/lib/client-utils";
-import { Button } from "@/components/ui/button";
+import { generateColorFromString } from "@/lib/utils";
 import { DeadlineTaskListModal } from "./deadline-task-list-modal";
 import { TaskProps } from "@/shared/types/task-props";
 import { DEADLINE_PROXIMITY_OBJECT } from "@/shared/const";
+import { ErrorDisplay } from "@/components/error-display";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 
 export function TaskDeadlineProximityBarChart() {
-  const { data, isLoading, isError, error, refetch } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["taskDeadlineProximity"],
     queryFn: () => fetchTaskDeadlineProximity(),
   });
@@ -93,23 +93,9 @@ export function TaskDeadlineProximityBarChart() {
           </CardDescription>
         </CardHeader>
         <CardContent className="px-2">
-          {isLoading && (
-            <div className="text-muted-foreground animate-pulse">
-              Loading graph…
-            </div>
-          )}
+          {isLoading && <Spinner variant="ellipsis" />}
 
-          {isError && (
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-red-500">
-                Failed to load data:{" "}
-                {error instanceof Error ? error.message : ""}
-              </span>
-              <Button onClick={() => refetch()} size="sm" className="gap-1">
-                <RefreshCw className="h-4 w-4" /> Retry
-              </Button>
-            </div>
-          )}
+          {isError && <ErrorDisplay errorMsg={error.message} />}
 
           {!isLoading && !isError && chartData && chartData.length === 0 && (
             <div className="text-muted-foreground">No data found.</div>

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
-import { cn } from "@/lib/client-utils";
+import { cn } from "@/lib/utils";
 import { Task } from "@prisma/client";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
@@ -140,7 +140,7 @@ export function TaskForm(props: TaskFormProps) {
 
   return (
     <Dialog open={props.open} onOpenChange={props.setOpen}>
-      <DialogContent>
+      <DialogContent className="max-h-4/5 overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {props.task
@@ -148,6 +148,7 @@ export function TaskForm(props: TaskFormProps) {
               : "Add new Task"}
           </DialogTitle>
         </DialogHeader>
+
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
@@ -361,10 +362,12 @@ export function TaskForm(props: TaskFormProps) {
               </DialogClose>
 
               <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending
-                  ? "Submitting..."
-                  : props.task
-                  ? "Update"
+                {props.task
+                  ? mutation.isPending
+                    ? "Update..."
+                    : "Update"
+                  : mutation.isPending
+                  ? "Create..."
                   : "Create"}
               </Button>
             </DialogFooter>

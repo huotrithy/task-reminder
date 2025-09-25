@@ -1,6 +1,6 @@
-import { cn } from "@/lib/client-utils";
+import { cn } from "@/lib/utils";
 import { Category, Task } from "@prisma/client";
-import { ChevronLeft } from "lucide-react";
+import { BellOff, BellRing, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -71,7 +71,7 @@ export function CategoryListItem({ category }: Prop) {
                           : "bg-muted text-gray-500"
                       )}
                     >
-                      {task.isToSend ? "Notification On" : "Notification Off"}
+                      {task.isToSend ? <BellRing /> : <BellOff />}
                     </Badge>
                   </div>
                   {task.deadline && (
