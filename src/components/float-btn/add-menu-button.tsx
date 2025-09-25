@@ -3,7 +3,7 @@
 import { Grid2x2Plus, LayoutList, PlusIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Dispatch, SetStateAction, useState } from "react";
-import { cn } from "@/lib/client-utils";
+import { cn } from "@/lib/utils";
 
 type Props = {
   setOpenCreateCategoryForm: Dispatch<SetStateAction<boolean>>;

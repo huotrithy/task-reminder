@@ -1,0 +1,21 @@
+{
+  "name": "Task Reminder",
+  "short_name": "Task Reminder",
+  "icons": [
+    {
+      "src": "/task-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/task-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}

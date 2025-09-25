@@ -13,6 +13,7 @@ export const ERROR_MESSAGE = {
   UNAUTHENTICATED: "Unauthenticated Access.",
 
   SERVER_ERROR: "Unexpected Error Occured, Please try again later.",
+  SOMETHING_WENT_WRONG: "Opp! Something went wrong, Please try again later.",
 };
 
 export const SUCCESS_MESSAGE = {

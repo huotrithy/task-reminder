@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Badge } from "../ui/badge";
 import { formatDateToString } from "../utils";
-import { ClipboardList } from "lucide-react";
+import { BellOff, BellRing, ClipboardList } from "lucide-react";
 
 type TaskProps = {
   id: string;
@@ -56,7 +56,7 @@ export function TaskList({ tasks }: Props) {
                           : "bg-muted text-gray-500"
                       }`}
                     >
-                      {task.isToSend ? "Notification On" : "Notification Off"}
+                      {task.isToSend ? <BellRing /> : <BellOff />}
                     </Badge>
                   )}
                 </div>

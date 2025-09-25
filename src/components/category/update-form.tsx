@@ -127,7 +127,7 @@ export function UpdateCategoryForm(props: Props) {
               </DialogClose>
 
               <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? "Submitting..." : "Update Category"}
+                {mutation.isPending ? "Update..." : "Update"}
               </Button>
             </DialogFooter>
           </form>

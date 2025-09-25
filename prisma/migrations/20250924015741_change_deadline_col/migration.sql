@@ -5,5 +5,5 @@
 
 */
 -- AlterTable
-ALTER TABLE "task" ALTER COLUMN "deadline" DROP NOT NULL,
-ALTER COLUMN "taskToCompletedBy" SET NOT NULL;
+ALTER TABLE "task" ALTER COLUMN "deadline" DROP NOT NULL;
+-- ALTER COLUMN "taskToCompletedBy" SET NOT NULL;

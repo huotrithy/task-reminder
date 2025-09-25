@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/client-utils";
+import { cn } from "@/lib/utils";
 import { menu } from "@/shared/const";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

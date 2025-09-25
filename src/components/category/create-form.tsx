@@ -103,7 +103,7 @@ export function CreateCategoryForm(props: Props) {
               </DialogClose>
 
               <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? "Submitting..." : "Create Category"}
+                {mutation.isPending ? "Create..." : "Create"}
               </Button>
             </DialogFooter>
           </form>

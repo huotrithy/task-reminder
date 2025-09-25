@@ -5,8 +5,8 @@
 
 */
 -- AlterTable
-ALTER TABLE "task" ADD COLUMN     "taskToCompletedBy" TIMESTAMP(3),
-ADD COLUMN     "within_days_to_send" INTEGER NOT NULL DEFAULT 30;
+-- ALTER TABLE "task" ADD COLUMN     "taskToCompletedBy" TIMESTAMP(3),
+-- ADD COLUMN     "within_days_to_send" INTEGER NOT NULL DEFAULT 30;
 
 -- AlterTable
 ALTER TABLE "user" DROP COLUMN "within_days_to_send";

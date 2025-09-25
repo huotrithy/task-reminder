@@ -10,6 +10,8 @@ import MainContentWrapper from "@/components/main-content-wrapper";
 import { UpdateCategoryForm } from "@/components/category/update-form";
 import { useState } from "react";
 import MdPageHeader from "@/components/page-header/md-page-header";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { ErrorDisplay } from "@/components/error-display";
 
 export default function PageClient({ categoryId }: { categoryId: string }) {
   const { data, isLoading, isError, error, refetch } = useQuery({
@@ -19,33 +21,43 @@ export default function PageClient({ categoryId }: { categoryId: string }) {
 
   const [openUpdateForm, setOpenUpdateForm] = useState(false);
 
-  if (isLoading) return <div>Loading tasks...</div>;
-  if (isError || !data) return <div>Error: {error?.message}</div>;
-
-  const pageTitle = `Category - ${data.category.categoryName}`;
-  const pageDesc = `${data.category.task.length} Tasks`;
+  const pageTitle = data
+    ? `Category - ${data.category.categoryName}`
+    : "Category";
+  const pageDesc = data ? `${data.category.task.length} Tasks` : "";
 
   return (
     <div>
       <PageHeader title={pageTitle} desc={pageDesc} backLink="/app" />
       <MdPageHeader title={pageTitle} desc={pageDesc} backLink="/app" />
+
       <MainContentWrapper>
-        <TaskList tasks={data.category.task} />
+        {isLoading && <Spinner variant="ellipsis" />}
+
+        {isError && <ErrorDisplay errorMsg={error.message} />}
+
+        {!isLoading && !isError && data && (
+          <TaskList tasks={data.category.task} />
+        )}
       </MainContentWrapper>
 
-      <DetailButtonMenu
-        deleteTitle="Delete Category"
-        deleteSuccessRedirectUrl="/app"
-        onDelete={() => deleteCategory({ categoryId: data.category.id })}
-        setUpdateOpen={setOpenUpdateForm}
-      />
+      {data && (
+        <>
+          <DetailButtonMenu
+            deleteTitle="Delete Category"
+            deleteSuccessRedirectUrl="/app"
+            onDelete={() => deleteCategory({ categoryId: data.category.id })}
+            setUpdateOpen={setOpenUpdateForm}
+          />
 
-      <UpdateCategoryForm
-        initialData={data.category}
-        open={openUpdateForm}
-        setOpen={setOpenUpdateForm}
-        refetch={refetch}
-      />
+          <UpdateCategoryForm
+            initialData={data.category}
+            open={openUpdateForm}
+            setOpen={setOpenUpdateForm}
+            refetch={refetch}
+          />
+        </>
+      )}
     </div>
   );
 }
