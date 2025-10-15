@@ -1,0 +1,28 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: task_reminder_app
+    image: ghcr.io/huotrithy/task_reminder_app:v1.0.1
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    ports:
+      - "127.0.0.1:3000:3000"
+    env_file:
+      - .env.production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/healthcheck"]
+      interval: 40s
+      timeout: 30s
+      retries: 3
+      start_period: 60s
+    
+    restart: unless-stopped
+    networks:
+      - postgresql_database_network
+
+networks:
+ postgresql_database_network:
+    external: true
