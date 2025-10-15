@@ -13,7 +13,7 @@ services:
     env_file:
       - .env.production
     healthcheck:
-      test: ["CMD-SHELL", "wget --spider -q http://localhost:3000/api/healthcheck || exit 1"]
+      test: ["CMD-SHELL", "wget --spider -q http://app:3000/api/healthcheck || exit 1"]
       interval: 40s
       timeout: 30s
       retries: 3
