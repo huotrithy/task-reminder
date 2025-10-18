@@ -24,7 +24,7 @@ export async function middleware(request: NextRequest) {
       pathname,
       body,
       userEmail: token?.email || "Unknown",
-      userAgent: agent.ua,
+      userAgent: agent,
     });
   }
 
