@@ -122,8 +122,6 @@ export async function getCategory(
 
 export async function deleteCategory(formInput: DeleteCategoryInputs) {
   try {
-    logger.info(formInput);
-
     const session = await getServerAuthSession();
     if (!session) {
       logger.error(ERROR_MESSAGE.UNAUTHENTICATED);
