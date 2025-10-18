@@ -9,13 +9,24 @@ const AUTH_REQUIRED = ["/app"];
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  const { method } = request;
   const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
   });
   const agent = userAgent(request);
 
-  logger.info(LOG_MESSAGE.INCOMMING_REQUEST, { pathname, userAgent: agent });
+  if (method !== "GET") {
+    const body = await request.json();
+    logger.info(LOG_MESSAGE.INCOMMING_REQUEST, {
+      method,
+      pathname,
+      body,
+      userEmail: token?.email || "Unknown",
+      userAgent: agent.ua,
+    });
+  }
 
   // Prevent access to login and signup on authenticated user
   if (token && AUTH_REDIRECT_BLOCKLIST.includes(pathname)) {
